@@ -10,6 +10,9 @@ import { setupSwagger } from './config/swagger';
 
 export const app = express();
 
+// Trust proxy for rate limiting (needed on Vercel/proxies)
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(helmet());
 app.use(cors());
