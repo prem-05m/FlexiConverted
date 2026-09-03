@@ -6,10 +6,11 @@ export class LocalDiskStorageProvider implements StorageProvider {
   private readonly rootDir: string;
 
   constructor() {
-    this.rootDir = path.resolve(process.cwd(), '..'); 
-    // Wait, process.cwd() is backend/, so '..' would be FlexiConvert/. 
-    // We want the storage folders (uploads, outputs, temp) to be inside backend.
-    this.rootDir = process.cwd();
+    if (process.env.VERCEL) {
+      this.rootDir = '/tmp';
+    } else {
+      this.rootDir = process.cwd();
+    }
   }
 
   async init(): Promise<void> {
