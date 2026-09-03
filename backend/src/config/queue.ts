@@ -37,14 +37,16 @@ redisConnection.on('error', (err) => {
 
 export const CONVERSION_QUEUE_NAME = 'conversion-queue';
 
-export const conversionQueue = new Queue(CONVERSION_QUEUE_NAME, {
-  connection: redisConnection,
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: {
-      type: 'exponential',
-      delay: 1000,
-    },
-    removeOnComplete: true,
-  },
-});
+export const conversionQueue = process.env.VERCEL || !process.env.REDIS_URL
+  ? ({ add: async () => { console.warn('Queue disabled on Vercel / Missing REDIS_URL'); return { id: 'mock' }; } } as any)
+  : new Queue(CONVERSION_QUEUE_NAME, {
+      connection: redisConnection,
+      defaultJobOptions: {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+        removeOnComplete: true,
+      },
+    });

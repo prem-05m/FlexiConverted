@@ -50,3 +50,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     error: process.env.NODE_ENV === 'development' ? err.message : undefined,
   });
 });
+
+export default app;
