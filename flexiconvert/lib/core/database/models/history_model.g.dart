@@ -15,7 +15,7 @@ extension GetHistoryItemCollection on Isar {
 
 const HistoryItemSchema = CollectionSchema(
   name: r'HistoryItem',
-  id: -4222060418120810496,
+  id: -4222060418120810312,
   properties: {
     r'durationMs': PropertySchema(
       id: 0,

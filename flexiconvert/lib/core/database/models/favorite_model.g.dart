@@ -15,7 +15,7 @@ extension GetFavoriteItemCollection on Isar {
 
 const FavoriteItemSchema = CollectionSchema(
   name: r'FavoriteItem',
-  id: 8773120788250693000,
+  id: 8773120788250692482,
   properties: {
     r'addedDate': PropertySchema(
       id: 0,
@@ -45,7 +45,7 @@ const FavoriteItemSchema = CollectionSchema(
   idName: r'id',
   indexes: {
     r'filePath': IndexSchema(
-      id: 2918041768256347000,
+      id: 2918041768256347220,
       name: r'filePath',
       unique: true,
       replace: true,

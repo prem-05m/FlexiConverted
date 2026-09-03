@@ -43,6 +43,7 @@ import '../../features/archive/presentation/screens/base_archive_tool_screen.dar
 import '../../features/archive/domain/models/archive_task_model.dart';
 import '../../features/qr/presentation/screens/qr_dashboard_screen.dart';
 import '../../features/qr/presentation/screens/base_qr_tool_screen.dart';
+import '../../features/qr/presentation/screens/qr_generator_screen.dart';
 import '../../features/qr/presentation/screens/scanner_screen.dart';
 import '../../features/qr/domain/models/qr_task_model.dart';
 import '../../features/files/presentation/screens/file_dashboard_screen.dart';
@@ -232,6 +233,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'tool',
                 builder: (context, state) {
                   final toolType = state.extra as QrToolType;
+                  if (toolType == QrToolType.generate) {
+                    return const QrGeneratorScreen();
+                  }
                   return BaseQrToolScreen(toolType: toolType);
                 },
               ),

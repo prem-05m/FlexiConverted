@@ -14,7 +14,7 @@ class CategoryGrid extends StatelessWidget {
     {'title': 'Audio Tools', 'icon': Icons.audiotrack, 'color': Colors.orange, 'gradient': AppColors.audioGradient, 'route': RouteConstants.audio},
     {'title': 'Convert PDF', 'icon': Icons.description, 'color': Colors.purple, 'gradient': AppColors.secondaryGradient, 'route': RouteConstants.document},
     {'title': 'Archive', 'icon': Icons.folder_zip, 'color': Colors.brown, 'gradient': AppColors.primaryGradient, 'route': RouteConstants.archive},
-    {'title': 'QR Tools', 'icon': Icons.qr_code_2, 'color': Colors.teal, 'gradient': AppColors.imageGradient, 'route': RouteConstants.qr},
+    {'title': 'Generate QR', 'icon': Icons.qr_code_2, 'color': Colors.teal, 'gradient': AppColors.imageGradient, 'route': RouteConstants.qr},
     {'title': 'More', 'icon': Icons.grid_view, 'color': Colors.indigo, 'gradient': AppColors.primaryGradient, 'route': null},
   ];
 

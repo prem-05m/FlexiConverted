@@ -16,7 +16,7 @@ class QrDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QR Tools'),
+        title: const Text('Generate QR'),
       ),
       body: WebConstrainedBox(
         maxWidth: 800,

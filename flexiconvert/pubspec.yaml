@@ -23,7 +23,7 @@ dependencies:
   # Database
   isar: any
   isar_flutter_libs: any
-  path_provider: any
+  path_provider: ^2.1.6
   
   # Networking
   dio: any
@@ -41,7 +41,7 @@ dependencies:
   
   # Files & Sharing
   file_picker: ^12.0.0
-  share_plus: any
+  share_plus: ^13.3.0
   open_filex: any
   permission_handler: any
   path: any
@@ -97,6 +97,10 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^34.2.6
   signature: ^6.4.0
   google_generative_ai: ^0.4.7
+  pretty_qr_code: ^3.6.0
+  flutter_colorpicker: ^1.1.0
+  barcode_widget: ^2.0.4
+  gal: ^2.3.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

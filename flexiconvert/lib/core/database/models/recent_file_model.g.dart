@@ -15,7 +15,7 @@ extension GetRecentFileCollection on Isar {
 
 const RecentFileSchema = CollectionSchema(
   name: r'RecentFile',
-  id: 428040767606462200,
+  id: 428040767606462206,
   properties: {
     r'fileName': PropertySchema(
       id: 0,
@@ -45,7 +45,7 @@ const RecentFileSchema = CollectionSchema(
   idName: r'id',
   indexes: {
     r'filePath': IndexSchema(
-      id: 2918041768256347000,
+      id: 2918041768256347220,
       name: r'filePath',
       unique: true,
       replace: true,

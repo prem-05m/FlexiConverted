@@ -15,7 +15,7 @@ extension GetUserProfileModelCollection on Isar {
 
 const UserProfileModelSchema = CollectionSchema(
   name: r'UserProfileModel',
-  id: -8790468936041821184,
+  id: -8790468936041821297,
   properties: {
     r'builtInAvatarIndex': PropertySchema(
       id: 0,

@@ -54,24 +54,24 @@ class StatisticsCard extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStat(context, 'Total Converted', '${s.total}',
-                Icons.swap_calls, AppColors.brandPrimary),
+            Expanded(child: _buildStat(context, 'Total Converted', '${s.total}',
+                Icons.swap_calls, AppColors.brandPrimary)),
             Container(
                 width: 1,
                 height: 40,
                 color: context.colorScheme.outlineVariant),
-            _buildStat(
+            Expanded(child: _buildStat(
                 context,
                 'Storage Saved',
                 _formatBytes(s.storageSavedBytes),
                 Icons.save_alt,
-                Colors.green),
+                Colors.green)),
             Container(
                 width: 1,
                 height: 40,
                 color: context.colorScheme.outlineVariant),
-            _buildStat(context, 'Time Saved', _formatTime(s.timeSavedMs),
-                Icons.timer, Colors.orange),
+            Expanded(child: _buildStat(context, 'Time Saved', _formatTime(s.timeSavedMs),
+                Icons.timer, Colors.orange)),
           ],
         ),
       ),

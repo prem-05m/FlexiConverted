@@ -15,7 +15,7 @@ extension GetAppSettingsCollection on Isar {
 
 const AppSettingsSchema = CollectionSchema(
   name: r'AppSettings',
-  id: -5633561779022347264,
+  id: -5633561779022347008,
   properties: {
     r'autoDeleteOriginal': PropertySchema(
       id: 0,

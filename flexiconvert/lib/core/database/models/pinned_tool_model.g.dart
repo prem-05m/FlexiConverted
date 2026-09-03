@@ -15,7 +15,7 @@ extension GetPinnedToolCollection on Isar {
 
 const PinnedToolSchema = CollectionSchema(
   name: r'PinnedTool',
-  id: 1562904810927054000,
+  id: 1562904810927054119,
   properties: {
     r'category': PropertySchema(
       id: 0,
@@ -45,7 +45,7 @@ const PinnedToolSchema = CollectionSchema(
   idName: r'id',
   indexes: {
     r'toolId': IndexSchema(
-      id: -1537962893477976600,
+      id: -1537962893477976456,
       name: r'toolId',
       unique: true,
       replace: true,

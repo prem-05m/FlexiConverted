@@ -63,17 +63,17 @@ const List<ToolEntry> _allTools = [
       icon: Icons.compress,
       color: Colors.purple,
       formats: ['pdf']),
-  // QR Tools
+  // Generate QR
   ToolEntry(
       name: 'Text to QR',
-      category: 'QR Tools',
+      category: 'Generate QR',
       routePath: '/home/qr/tool',
       icon: Icons.qr_code,
       color: Colors.deepPurple,
       formats: ['qr', 'png']),
   ToolEntry(
       name: 'Scan QR',
-      category: 'QR Tools',
+      category: 'Generate QR',
       routePath: '/home/qr/scan',
       icon: Icons.qr_code_scanner,
       color: Colors.deepPurple,
