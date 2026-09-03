@@ -1,0 +1,15 @@
+{
+    "@@locale": "en",
+    "appName": "FlexiConvert",
+    "homeTitle": "Home",
+    "search": "Search",
+    "recentFiles": "Recent Files",
+    "pinnedTools": "Pinned Tools",
+    "categories": "Categories",
+    "pdfTools": "PDF Tools",
+    "imageTools": "Image Tools",
+    "settings": "Settings",
+    "about": "About",
+    "favorites": "Favorites",
+    "history": "History"
+}

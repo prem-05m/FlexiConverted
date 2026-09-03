@@ -1,0 +1,15 @@
+{
+    "@@locale": "ta",
+    "appName": "FlexiConvert",
+    "homeTitle": "முகப்பு",
+    "search": "தேடல்",
+    "recentFiles": "சமீபத்திய கோப்புகள்",
+    "pinnedTools": "பின் செய்த கருவிகள்",
+    "categories": "வகைகள்",
+    "pdfTools": "PDF கருவிகள்",
+    "imageTools": "படக் கருவிகள்",
+    "settings": "அமைப்புகள்",
+    "about": "பற்றி",
+    "favorites": "விருப்பமானவை",
+    "history": "வரலாறு"
+}

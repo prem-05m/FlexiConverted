@@ -1,0 +1,115 @@
+name: flexiconvert
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.3.0+3
+
+environment:
+  sdk: '^3.5.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  
+  # State Management & DI
+  flutter_riverpod: any
+  riverpod_annotation: any
+  hooks_riverpod: any
+  
+  # Navigation
+  go_router: any
+  
+  # Database
+  isar: any
+  isar_flutter_libs: any
+  path_provider: any
+  
+  # Networking
+  dio: any
+  connectivity_plus: any
+  pretty_dio_logger: any
+  
+  # Storage
+  shared_preferences: any
+  flutter_secure_storage: any
+  
+  # PDF
+  pdf: any
+  printing: any
+  pdfx: any
+  
+  # Files & Sharing
+  file_picker: ^12.0.0
+  share_plus: any
+  open_filex: any
+  permission_handler: any
+  path: any
+  
+  # Image processing
+  image: any
+  
+  # UI & Animations
+  flutter_animate: any
+  lottie: any
+  flutter_screenutil: any
+  dynamic_color: ^1.6.9
+  cached_network_image: any
+  shimmer: any
+  flutter_staggered_grid_view: any
+  
+  # Localization
+  intl: any
+  
+  # Utils
+  logger: any
+  freezed_annotation: any
+  json_annotation: any
+  equatable: any
+  uuid: any
+  mime: any
+  device_info_plus: any
+  fpdart: any
+  flutter_image_compress: any
+  video_player: any
+  chewie: any
+  media_kit: any
+  audio_waveforms: any
+  just_audio: any
+  audio_video_progress_bar: any
+  archive: any
+  qr_flutter: any
+  mobile_scanner: any
+  google_mlkit_text_recognition: any
+  firebase_core: any
+  firebase_auth: any
+  google_sign_in: ^6.2.2
+  sign_in_with_apple: any
+  local_auth: ^2.3.0
+  image_picker: any
+  in_app_review: any
+  url_launcher: any
+  syncfusion_flutter_pdf: ^34.2.4
+  reorderable_grid_view: ^2.2.8
+  window_manager: ^0.5.2
+  cloud_firestore: ^6.9.0
+  crop_image: ^1.0.17
+  syncfusion_flutter_pdfviewer: ^34.2.6
+  signature: ^6.4.0
+  google_generative_ai: ^0.4.7
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: any
+  
+  # Code Gen
+  build_runner: any
+  freezed: any
+  json_serializable: any
+  isar_generator: any
+  riverpod_generator: any
+  mocktail: any
+
+flutter:
+  uses-material-design: true
+  generate: true

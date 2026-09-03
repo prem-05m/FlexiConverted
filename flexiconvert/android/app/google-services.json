@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "186515095138",
+    "project_id": "flexiconvert-79f5e",
+    "storage_bucket": "flexiconvert-79f5e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186515095138:android:249212e504d98315c89b3b",
+        "android_client_info": {
+          "package_name": "com.phynex.flexiconvert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186515095138-3he657djq62h5ec6i55hi6eagus7t2mc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phynex.flexiconvert",
+            "certificate_hash": "c94f3d22643a97aa978dba9a3b8d37ffdffa9840"
+          }
+        },
+        {
+          "client_id": "186515095138-9vdknk1rnv15gplck12a5iqdgledb55b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phynex.flexiconvert",
+            "certificate_hash": "68250b53881ea645318503d03956acc99d37a328"
+          }
+        },
+        {
+          "client_id": "186515095138-4m2p50nlbk2ge0kh0e1ksao8dbilcudc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm9DX2QaZWqSR0RwrPrRl1GyEEWAQbR4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186515095138-4m2p50nlbk2ge0kh0e1ksao8dbilcudc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
