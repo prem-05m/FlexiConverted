@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
 export class AuthController {
   static async register(req: Request, res: Response): Promise<void> {
@@ -20,7 +20,7 @@ export class AuthController {
       }
 
       const passwordHash = await bcrypt.hash(password, 10);
-      const apiKey = uuidv4();
+      const apiKey = crypto.randomUUID();
 
       const user = await User.create({ email, passwordHash, name, apiKey });
       

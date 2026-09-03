@@ -3,7 +3,7 @@ import { Job } from '../models/Job';
 import { conversionQueue } from '../config/queue';
 import { storage } from '../storage/LocalDiskStorageProvider';
 import { AuthRequest } from '../middlewares/auth';
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
 export class JobController {
   /**
@@ -28,7 +28,7 @@ export class JobController {
       const inputFiles: string[] = [];
       for (const file of files) {
         const ext = file.originalname.split('.').pop() || '';
-        const filename = `${uuidv4()}.${ext}`;
+        const filename = `${crypto.randomUUID()}.${ext}`;
         const path = await storage.saveFile(file.buffer, filename, 'uploads');
         inputFiles.push(filename); 
       }
