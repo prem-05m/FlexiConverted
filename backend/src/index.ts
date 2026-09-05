@@ -1,29 +1,29 @@
 import dotenv from 'dotenv';
 import { app } from './app';
-import { connectDB } from './config/database';
+import { initFirebase } from './config/firebase';
 import { storage } from './storage/LocalDiskStorageProvider';
 // Workers disabled per user request to bypass Redis
 // import './workers/conversionWorker';
-// import { startCleanupJob } from './workers/cleanupWorker';
+import { startCloudBackupCleanupJob } from './workers/cloudBackupCleanupWorker';
+import './workers/JobWorker';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/flexiconvert';
 
 const startServer = async () => {
   // Initialize Storage
   await storage.init();
   console.log('Storage provider initialized');
 
-  // Connect Database (Disabled for now per user request to use local storage)
-  // await connectDB(MONGO_URI);
+  // Initialize Firebase
+  initFirebase();
 
-  // Start Cleanup Cron (Disabled)
-  // startCleanupJob();
+  // Start Cleanup Cron
+  startCloudBackupCleanupJob();
 
   // Start Server
-  app.listen(PORT, () => {
+  app.listen(PORT as number, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };

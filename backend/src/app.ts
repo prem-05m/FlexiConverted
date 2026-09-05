@@ -3,9 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
-import authRoutes from './routes/auth.routes';
 import jobRoutes from './routes/job.routes';
 import uploadRoutes from './routes/upload.routes';
+import apiKeyRoutes from './routes/api_key.routes';
 import { setupSwagger } from './config/swagger';
 
 export const app = express();
@@ -37,9 +37,9 @@ app.use('/api', apiLimiter);
 setupSwagger(app);
 
 // Routes
-app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/jobs', jobRoutes);
 app.use('/api/v1/uploads', uploadRoutes);
+app.use('/api/v1/keys', apiKeyRoutes);
 
 // Health Check
 app.get('/health', (req: Request, res: Response) => {

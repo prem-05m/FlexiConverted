@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
+import { getAuth } from '../config/firebase';
+import { UserRepository } from '../repositories/UserRepository';
 
 export interface AuthRequest extends Request {
   user?: any;
@@ -9,30 +9,31 @@ export interface AuthRequest extends Request {
 export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    const apiKey = req.headers['x-api-key'] as string;
-
-    // Check API Key first
-    if (apiKey) {
-      const user = await User.findOne({ apiKey });
-      if (user) {
-        req.user = user;
-        return next();
-      }
-    }
-
-    // Check JWT
+    
+    // Check Firebase ID Token
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret') as any;
-      const user = await User.findById(decoded.userId);
-      if (user) {
-        req.user = user;
-        return next();
+      
+      const decodedToken = await getAuth().verifyIdToken(token);
+      
+      // Get or create user in Firestore
+      let user = await UserRepository.findById(decodedToken.uid);
+      
+      if (!user) {
+        user = await UserRepository.createOrUpdate(decodedToken.uid, {
+          email: decodedToken.email || '',
+          name: decodedToken.name || '',
+          role: 'user',
+        });
       }
+      
+      req.user = user;
+      return next();
     }
 
     res.status(401).json({ success: false, message: 'Unauthorized' });
   } catch (error) {
-    res.status(401).json({ success: false, message: 'Invalid Token or API Key' });
+    console.error('Auth Error:', error);
+    res.status(401).json({ success: false, message: 'Invalid Token' });
   }
 };

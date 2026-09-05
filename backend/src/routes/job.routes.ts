@@ -12,6 +12,7 @@ router.use(authenticate);
 router.post('/upload', upload.array('files'), JobController.createJob);
 router.get('/history', JobController.getHistory);
 router.get('/:id/status', JobController.getStatus);
+router.get('/:id/download', JobController.downloadJob);
 router.delete('/:id', JobController.deleteJob);
 
 export default router;

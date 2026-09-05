@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+uploads
+temp
+outputs
+.git
+.vscode
+.idea
+*.log
