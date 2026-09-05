@@ -48,10 +48,9 @@ export class JobRepository {
   static async findByUserId(userId: string): Promise<Job[]> {
     const snapshot = await this.collection
       .where('userId', '==', userId)
-      .orderBy('createdAt', 'desc')
       .get();
       
-    return snapshot.docs.map((doc: any) => {
+    const jobs = snapshot.docs.map((doc: any) => {
       const data = doc.data() as any;
       return {
         id: doc.id,
@@ -60,6 +59,10 @@ export class JobRepository {
         updatedAt: data.updatedAt?.toDate() || new Date(),
       } as Job;
     });
+
+    // Sort locally to avoid composite index requirement
+    jobs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return jobs;
   }
 
   static async update(id: string, updateData: Partial<Job>): Promise<Job | null> {
