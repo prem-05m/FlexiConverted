@@ -12,6 +12,7 @@ export interface Job {
   params: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
+  deviceName?: string;
 }
 
 export class JobRepository {

@@ -12,7 +12,7 @@ export class JobController {
   static async createJob(req: AuthRequest, res: Response): Promise<void> {
     try {
       const files = req.files as Express.Multer.File[];
-      const { toolType, params } = req.body;
+      const { toolType, params, deviceName } = req.body;
 
       if (!files || files.length === 0) {
         res.status(400).json({ success: false, message: 'No files uploaded' });
@@ -41,7 +41,8 @@ export class JobController {
         inputFiles,
         status: 'pending',
         progress: 0,
-        params: parsedParams
+        params: parsedParams,
+        deviceName
       });
 
       // Add to BullMQ
