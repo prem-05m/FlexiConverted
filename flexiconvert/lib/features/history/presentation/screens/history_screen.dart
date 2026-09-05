@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -9,6 +11,7 @@ import '../../../../core/database/models/history_model.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/services/snackbar_service.dart';
 import '../../../../core/services/firestore_history_service.dart';
+import '../../../../core/services/download_location_service.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/animated_app_bar.dart';
 import '../../../../shared/widgets/bottom_nav_bar.dart';
@@ -52,7 +55,13 @@ class HistoryScreen extends ConsumerWidget {
       ),
       body: historyAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        error: (e, _) {
+          return EmptyStateWidget(
+            title: 'History Unavailable',
+            subtitle: 'Unable to load history. Please ensure you are logged in and connected to the internet.\n\nDetails: $e',
+            icon: Icons.history_rounded,
+          ).animate().fadeIn().slideY(begin: 0.1, end: 0);
+        },
         data: (items) {
           if (items.isEmpty) {
             return EmptyStateWidget(
@@ -102,11 +111,18 @@ class HistoryScreen extends ConsumerWidget {
   }
 }
 
-class _HistoryTile extends StatelessWidget {
+class _HistoryTile extends StatefulWidget {
   final HistoryItem item;
   final int index;
   final WidgetRef ref;
   const _HistoryTile({required this.item, required this.index, required this.ref});
+
+  @override
+  State<_HistoryTile> createState() => _HistoryTileState();
+}
+
+class _HistoryTileState extends State<_HistoryTile> {
+  bool _isDownloading = false;
 
   Color _statusColor(BuildContext context, String status) {
     switch (status) {
@@ -141,23 +157,60 @@ class _HistoryTile extends StatelessWidget {
   }
 
   Future<void> _deleteItem() async {
-    final firestoreService = ref.read(firestoreHistoryServiceProvider);
+    final firestoreService = widget.ref.read(firestoreHistoryServiceProvider);
     if (firestoreService != null) {
-      await firestoreService.deleteHistory(item.id);
+      await firestoreService.deleteHistory(widget.item.id);
     } else {
-      await db.deleteHistory(item.id);
+      await db.deleteHistory(widget.item.id);
+    }
+  }
+
+  Future<void> _downloadCloudFile(BuildContext context, HistoryItem item) async {
+    if (item.cloudUrl == null) return;
+    try {
+      setState(() => _isDownloading = true);
+      SnackbarService.showInfo('Starting download...');
+      
+      final dio = Dio();
+      final savePath = await DownloadLocationService.getOutputPath(context, widget.ref, item.fileName);
+      
+      if (savePath == null) {
+        setState(() => _isDownloading = false);
+        SnackbarService.showInfo('Download cancelled');
+        return;
+      }
+      
+      await dio.download(item.cloudUrl!, savePath);
+      
+      item.outputPath = savePath;
+      await db.putHistory(item);
+      
+      if (mounted) {
+        setState(() => _isDownloading = false);
+      }
+      SnackbarService.showSuccess('Downloaded to FlexiConverted folder');
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isDownloading = false);
+      }
+      SnackbarService.showError('Download failed: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final item = widget.item;
     final statusColor = _statusColor(context, item.status);
+    final isLocal = item.outputPath.isNotEmpty && File(item.outputPath).existsSync();
+    final hasCloud = item.cloudUrl != null && item.cloudUrl!.isNotEmpty;
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
         backgroundColor: context.colorScheme.primaryContainer,
-        child: Icon(Icons.transform, color: context.colorScheme.primary),
+        child: _isDownloading 
+          ? const CircularProgressIndicator()
+          : Icon(Icons.transform, color: context.colorScheme.primary),
       ),
       title: Text(item.fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Column(
@@ -168,6 +221,14 @@ class _HistoryTile extends StatelessWidget {
             '${_formatDate(item.timestamp)} • ${_formatSize(item.fileSizeBytes)}',
             style: context.textTheme.bodySmall?.copyWith(color: context.colorScheme.onSurfaceVariant),
           ),
+          if (item.deviceName != null && item.deviceName!.isNotEmpty)
+            Text(
+              'Converted from: ${item.deviceName}',
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colorScheme.primary, 
+                fontStyle: FontStyle.italic
+              ),
+            ),
         ],
       ),
       trailing: Row(
@@ -180,6 +241,9 @@ class _HistoryTile extends StatelessWidget {
               if (val == 'share' && !kIsWeb) {
                 await Share.shareXFiles([XFile(item.outputPath)]);
               }
+              if (val == 'download' && !kIsWeb) {
+                await _downloadCloudFile(context, item);
+              }
               if (val == 'rename' && !kIsWeb) {
                 _showRenameDialog(context, item);
               }
@@ -188,9 +252,14 @@ class _HistoryTile extends StatelessWidget {
               }
             },
             itemBuilder: (_) => [
-              if (!kIsWeb) ...[
+              if (!kIsWeb && isLocal) ...[
                 const PopupMenuItem(value: 'open', child: Text('Open')),
                 const PopupMenuItem(value: 'share', child: Text('Share')),
+              ],
+              if (!kIsWeb && !isLocal && hasCloud) ...[
+                const PopupMenuItem(value: 'download', child: Text('Download file')),
+              ],
+              if (!kIsWeb && isLocal) ...[
                 const PopupMenuItem(value: 'rename', child: Text('Rename')),
               ],
               const PopupMenuItem(value: 'delete', child: Text('Delete', style: TextStyle(color: Colors.red))),
@@ -198,7 +267,7 @@ class _HistoryTile extends StatelessWidget {
           ),
         ],
       ),
-    ).animate().fadeIn(delay: (50 * index).ms).slideX(begin: 0.05, end: 0);
+    ).animate().fadeIn(delay: (50 * widget.index).ms).slideX(begin: 0.05, end: 0);
   }
 
   void _showRenameDialog(BuildContext context, HistoryItem item) {
@@ -226,6 +295,15 @@ class _HistoryTile extends StatelessWidget {
                       ? item.fileName.substring(item.fileName.lastIndexOf('.'))
                       : '';
                   final newFileNameWithExt = newName.endsWith(extension) ? newName : '$newName$extension';
+                  
+                  // Rename the actual file
+                  final file = File(item.outputPath);
+                  if (file.existsSync()) {
+                    final newPath = item.outputPath.replaceAll(item.fileName, newFileNameWithExt);
+                    await file.rename(newPath);
+                    item.outputPath = newPath;
+                  }
+                  
                   item.fileName = newFileNameWithExt;
                   await db.putHistory(item);
                   if (context.mounted) {

@@ -12,22 +12,25 @@ class FirestoreHistoryService {
       : _uid = uid,
         _firestore = firestore ?? FirebaseFirestore.instance;
 
-  CollectionReference<Map<String, dynamic>> get _historyCollection =>
-      _firestore.collection('users').doc(_uid).collection('history');
+  Query<Map<String, dynamic>> get _historyQuery =>
+      _firestore.collection('jobs').where('userId', isEqualTo: _uid);
+      
+  CollectionReference<Map<String, dynamic>> get _jobsCollection =>
+      _firestore.collection('jobs');
 
   /// Watch all history items as a real-time stream, ordered by timestamp desc.
   Stream<List<HistoryItem>> watchHistory() {
-    return _historyCollection
-        .orderBy('timestamp', descending: true)
+    return _historyQuery
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs.map(_docToHistoryItem).toList());
   }
 
   /// Watch only successful history items as a real-time stream.
   Stream<List<HistoryItem>> watchSuccessfulHistory() {
-    return _historyCollection
+    return _historyQuery
         .where('status', isEqualTo: 'success')
-        .orderBy('timestamp', descending: true)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snap) => snap.docs.map(_docToHistoryItem).toList());
   }
@@ -35,7 +38,7 @@ class FirestoreHistoryService {
   /// Fetch all history items once (optionally limited).
   Future<List<HistoryItem>> findAllHistory({int? limit}) async {
     Query<Map<String, dynamic>> query =
-        _historyCollection.orderBy('timestamp', descending: true);
+        _historyQuery.orderBy('createdAt', descending: true);
     if (limit != null) query = query.limit(limit);
     final snap = await query.get();
     return snap.docs.map(_docToHistoryItem).toList();
@@ -45,15 +48,15 @@ class FirestoreHistoryService {
   Future<void> putHistory(HistoryItem item) async {
     final docId = item.id != 0
         ? item.id.toString()
-        : _historyCollection.doc().id;
+        : _jobsCollection.doc().id;
 
-    await _historyCollection.doc(docId).set(_historyItemToMap(item));
+    await _jobsCollection.doc(docId).set(_historyItemToMap(item), SetOptions(merge: true));
   }
 
   /// Delete a single history item by its Isar id (stored as docId).
   Future<bool> deleteHistory(int id) async {
     try {
-      await _historyCollection.doc(id.toString()).delete();
+      await _jobsCollection.doc(id.toString()).delete();
       return true;
     } catch (_) {
       return false;
@@ -62,7 +65,7 @@ class FirestoreHistoryService {
 
   /// Clear all history for this user.
   Future<void> clearHistory() async {
-    final snap = await _historyCollection.get();
+    final snap = await _historyQuery.get();
     final batch = _firestore.batch();
     for (final doc in snap.docs) {
       batch.delete(doc.reference);
@@ -76,25 +79,45 @@ class FirestoreHistoryService {
     final data = doc.data()!;
     final item = HistoryItem();
     item.id = int.tryParse(doc.id) ?? 0;
-    item.fileName = data['fileName'] as String? ?? '';
+    
+    // Check if it's a backend job or frontend history
+    item.fileName = data['fileName'] as String? ?? 'Backend Job';
     item.toolType = data['toolType'] as String? ?? '';
-    item.timestamp = (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now();
-    item.status = data['status'] as String? ?? 'success';
+    item.timestamp = (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now();
+    
+    // Convert backend status to frontend status
+    String rawStatus = data['status'] as String? ?? 'success';
+    if (rawStatus == 'completed') rawStatus = 'success';
+    item.status = rawStatus;
+    
+    // Backend jobs have outputFiles array, local has outputPath
+    if (data['outputFiles'] != null && (data['outputFiles'] as List).isNotEmpty) {
+      item.cloudUrl = (data['outputFiles'] as List).first as String;
+    } else {
+      item.cloudUrl = data['cloudUrl'] as String?;
+    }
+    
     item.outputPath = data['outputPath'] as String? ?? '';
     item.durationMs = (data['durationMs'] as num?)?.toInt() ?? 0;
     item.fileSizeBytes = (data['fileSizeBytes'] as num?)?.toInt() ?? 0;
+    item.deviceName = data['deviceName'] as String?;
+    
     return item;
   }
 
   Map<String, dynamic> _historyItemToMap(HistoryItem item) {
     return {
+      'userId': _uid,
       'fileName': item.fileName,
       'toolType': item.toolType,
-      'timestamp': Timestamp.fromDate(item.timestamp),
-      'status': item.status,
+      'createdAt': Timestamp.fromDate(item.timestamp),
+      'updatedAt': Timestamp.fromDate(item.timestamp),
+      'status': item.status == 'success' ? 'completed' : item.status,
       'outputPath': item.outputPath,
+      'cloudUrl': item.cloudUrl,
       'durationMs': item.durationMs,
       'fileSizeBytes': item.fileSizeBytes,
+      'deviceName': item.deviceName,
     };
   }
 }

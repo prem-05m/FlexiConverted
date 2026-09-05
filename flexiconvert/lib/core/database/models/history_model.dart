@@ -13,4 +13,6 @@ class HistoryItem {
   late String outputPath;
   late int durationMs;
   late int fileSizeBytes;
+  String? deviceName; // Add this
+  String? cloudUrl;   // Add this
 }

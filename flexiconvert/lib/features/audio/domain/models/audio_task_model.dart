@@ -19,6 +19,12 @@ enum AudioToolType {
   stereoMono,
   metadataEditor,
   albumArt,
+  changePitch,
+  removeSilence,
+  removeMetadata,
+  batchConvert,
+  audioWaveform,
+  addAudioToVideo,
 }
 
 enum AudioFormat {

@@ -9,6 +9,20 @@ enum ImageToolType {
   crop,
   rotate,
   flip,
+  adjust,
+  addText,
+  addWatermark,
+  blur,
+  pixelate,
+  imageToPdf,
+  metadataViewer,
+  removeMetadata,
+  dpiResolution,
+  colorMode,
+  batchConvert,
+  batchResize,
+  batchCompress,
+  editImage,
 }
 
 enum ImageFormat {

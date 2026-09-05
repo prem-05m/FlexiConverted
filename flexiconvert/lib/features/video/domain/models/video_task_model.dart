@@ -21,6 +21,18 @@ enum VideoToolType {
   generateGif,
   generateThumbnail,
   frameExtractor,
+  cutSplit,
+  addAudio,
+  replaceAudio,
+  removeAudio,
+  videoToGif,
+  gifToVideo,
+  videoToImages,
+  imagesToVideo,
+  addText,
+  addWatermark,
+  changeAspectRatio,
+  batchConvert,
 }
 
 enum VideoFormat {

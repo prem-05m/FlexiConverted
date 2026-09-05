@@ -199,7 +199,7 @@ class _QrGeneratorScreenState extends ConsumerState<QrGeneratorScreen> {
 
   Future<void> _pickAndUploadFile(QrConfig notifier, QrPayloadType payloadType, {fp.FileType type = fp.FileType.any}) async {
     try {
-      var result;
+      List<fp.PlatformFile> result;
       if (type == fp.FileType.custom) {
         result = await fp.FilePicker.pickFiles(
           type: type,

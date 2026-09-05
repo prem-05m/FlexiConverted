@@ -113,7 +113,7 @@ extension QrConfigModelX on QrConfigModel {
       case QrPayloadType.barcode:
         return data;
       case QrPayloadType.wifi:
-        final escape = (String str) => str.replaceAll('\\', '\\\\').replaceAll(';', '\\;').replaceAll(',', '\\,').replaceAll(':', '\\:');
+        String escape(String str) => str.replaceAll('\\', '\\\\').replaceAll(';', '\\;').replaceAll(',', '\\,').replaceAll(':', '\\:');
         final type = wifiSecurity == WifiSecurity.wpa ? 'WPA' : (wifiSecurity == WifiSecurity.wep ? 'WEP' : 'nopass');
         return 'WIFI:S:${escape(wifiSsid)};T:$type;P:${escape(wifiPassword)};;';
       case QrPayloadType.whatsapp:

@@ -49,8 +49,6 @@ class DocumentDashboardScreen extends StatelessWidget {
             color: tool.color,
             onTap: () {
               final comingSoonTools = [
-                DocumentToolType.jpgToPdf, 
-                DocumentToolType.pdfToJpg, 
                 DocumentToolType.pdfToPdfA
               ];
               if (comingSoonTools.contains(tool.type)) {

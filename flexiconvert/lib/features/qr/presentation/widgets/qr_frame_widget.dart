@@ -255,8 +255,8 @@ class QrFrameWidget extends StatelessWidget {
         border: Border.all(color: frameColor, width: 2),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: frameColor.withOpacity(0.5), blurRadius: 10, spreadRadius: 2),
-          BoxShadow(color: frameColor.withOpacity(0.5), blurRadius: 10, spreadRadius: 2),
+          BoxShadow(color: frameColor.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2),
+          BoxShadow(color: frameColor.withValues(alpha: 0.5), blurRadius: 10, spreadRadius: 2),
         ],
       ),
       child: Column(
@@ -277,7 +277,7 @@ class QrFrameWidget extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: frameColor.withOpacity(0.4), blurRadius: 20, offset: const Offset(0, 10)),
+          BoxShadow(color: frameColor.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10)),
         ],
       ),
       child: Column(
@@ -295,9 +295,9 @@ class QrFrameWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [frameColor.withOpacity(0.2), frameColor.withOpacity(0.05)]),
+        gradient: LinearGradient(colors: [frameColor.withValues(alpha: 0.2), frameColor.withValues(alpha: 0.05)]),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: frameColor.withOpacity(0.3), width: 1.5),
+        border: Border.all(color: frameColor.withValues(alpha: 0.3), width: 1.5),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -501,8 +501,11 @@ class _StarburstPainter extends CustomPainter {
       final r = (i % 2 == 0) ? radius : innerRadius;
       final angle = (i * math.pi) / numPoints;
       final point = Offset(center.dx + r * math.cos(angle), center.dy + r * math.sin(angle));
-      if (i == 0) path.moveTo(point.dx, point.dy);
-      else path.lineTo(point.dx, point.dy);
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
     }
     path.close();
     canvas.drawPath(path, paint);

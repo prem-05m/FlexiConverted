@@ -427,7 +427,7 @@ class LocalPdfEngine implements PdfEngine {
       if (saveAsFolder) {
         final dir = Directory(outputDirOrZipPath);
         if (!await dir.exists()) await dir.create(recursive: true);
-        outPath = '${outputDirOrZipPath}${Platform.pathSeparator}$name';
+        outPath = '$outputDirOrZipPath${Platform.pathSeparator}$name';
       } else {
         final tempDir = Directory('${outputDirOrZipPath}_tmp');
         if (!await tempDir.exists()) await tempDir.create(recursive: true);
@@ -1111,9 +1111,7 @@ class LocalPdfEngine implements PdfEngine {
       archive.addFile(ArchiveFile(name, bytes.length, bytes));
     }
     final zipData = ZipEncoder().encode(archive);
-    if (zipData != null) {
-      await File(zipPath).writeAsBytes(zipData);
-    }
+    await File(zipPath).writeAsBytes(zipData);
     return zipPath;
   }
 

@@ -144,8 +144,9 @@ final topHistoryProvider = FutureProvider<List<ToolEntry>>((ref) async {
 
 final searchResultsProvider = FutureProvider<_SearchResults>((ref) async {
   final query = ref.watch(searchQueryProvider).toLowerCase().trim();
-  if (query.isEmpty)
+  if (query.isEmpty) {
     return const _SearchResults(tools: [], history: [], recent: []);
+  }
 
   final tools = _allTools
       .where((t) =>

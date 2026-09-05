@@ -317,7 +317,7 @@ class _AddPageNumbersOptionsWidgetState extends State<AddPageNumbersOptionsWidge
             border: OutlineInputBorder(),
             isDense: true,
           ),
-          value: _fontFamilies.contains(_pnFontFamily) ? _pnFontFamily : _fontFamilies.first,
+          initialValue: _fontFamilies.contains(_pnFontFamily) ? _pnFontFamily : _fontFamilies.first,
           items: _fontFamilies.map((f) => DropdownMenuItem(value: f, child: Text(f))).toList(),
           onChanged: (v) {
             setState(() => _pnFontFamily = v ?? 'Arial');
@@ -388,7 +388,7 @@ class _AddPageNumbersOptionsWidgetState extends State<AddPageNumbersOptionsWidge
           spacing: 8,
           runSpacing: 8,
           children: _colorPalette.map((color) {
-            final isSelected = _pnColor.value == color.value;
+            final isSelected = _pnColor.toARGB32() == color.toARGB32();
             return GestureDetector(
               onTap: () {
                 setState(() => _pnColor = color);
@@ -404,7 +404,7 @@ class _AddPageNumbersOptionsWidgetState extends State<AddPageNumbersOptionsWidge
                     width: isSelected ? 3 : 1,
                   ),
                   boxShadow: isSelected
-                      ? [BoxShadow(color: theme.colorScheme.primary.withOpacity(0.4), blurRadius: 4, spreadRadius: 1)]
+                      ? [BoxShadow(color: theme.colorScheme.primary.withValues(alpha: 0.4), blurRadius: 4, spreadRadius: 1)]
                       : null,
                 ),
                 child: isSelected
@@ -520,7 +520,11 @@ class _AddPageNumbersOptionsWidgetState extends State<AddPageNumbersOptionsWidge
                   if (isLeft) left = 8;
                   if (isCenter) { left = 0; right = 0; }
                   if (isRight) right = 8;
-                  if (isTop) top = 8; else bottom = 8;
+                  if (isTop) {
+                    top = 8;
+                  } else {
+                    bottom = 8;
+                  }
 
                   return Positioned(
                     left: left,
@@ -538,7 +542,7 @@ class _AddPageNumbersOptionsWidgetState extends State<AddPageNumbersOptionsWidge
                           color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
                           shape: BoxShape.circle,
                           boxShadow: isSelected
-                              ? [BoxShadow(color: Theme.of(context).colorScheme.primary.withOpacity(0.4), blurRadius: 4)]
+                              ? [BoxShadow(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4), blurRadius: 4)]
                               : null,
                         ),
                         child: isSelected

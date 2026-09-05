@@ -7,7 +7,6 @@ import '../../../../core/constants/route_constants.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../auth/presentation/providers/auth_providers.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

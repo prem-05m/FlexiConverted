@@ -23,11 +23,14 @@ import '../../features/queue/presentation/screens/completed_screen.dart';
 import '../../features/pdf/presentation/screens/pdf_dashboard_screen.dart';
 import '../../features/pdf/presentation/screens/base_pdf_tool_screen.dart';
 import '../../features/pdf/presentation/screens/edit_pdf_screen.dart';
+import '../../features/pdf/presentation/screens/image_to_pdf_screen.dart';
+import '../../features/pdf/presentation/screens/pdf_to_image_screen.dart';
 import '../../features/pdf/presentation/screens/sign_pdf_screen.dart';
 import '../../features/pdf/presentation/screens/redact_pdf_screen.dart';
 import '../../features/pdf/domain/models/pdf_task_model.dart';
 import '../../features/image/presentation/screens/image_dashboard_screen.dart';
 import '../../features/image/presentation/screens/base_image_tool_screen.dart';
+import '../../features/image/presentation/screens/image_editor_dashboard_screen.dart';
 import '../../features/image/domain/models/image_task_model.dart';
 import '../../features/document/presentation/screens/document_dashboard_screen.dart';
 import '../../features/document/presentation/screens/base_document_tool_screen.dart';
@@ -164,7 +167,20 @@ final routerProvider = Provider<GoRouter>((ref) {
               return GoRoute(
                 path: tool.name,
                 name: 'image_${tool.name}',
-                builder: (context, state) => BaseImageToolScreen(toolType: tool),
+                builder: (context, state) {
+                  if (tool == ImageToolType.editImage ||
+                      tool == ImageToolType.crop ||
+                      tool == ImageToolType.rotate ||
+                      tool == ImageToolType.flip ||
+                      tool == ImageToolType.adjust ||
+                      tool == ImageToolType.addText ||
+                      tool == ImageToolType.addWatermark ||
+                      tool == ImageToolType.blur ||
+                      tool == ImageToolType.pixelate) {
+                    return const ImageEditorDashboardScreen();
+                  }
+                  return BaseImageToolScreen(toolType: tool);
+                },
               );
             }).toList(),
           ),
@@ -176,7 +192,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               return GoRoute(
                 path: tool.name,
                 name: 'document_${tool.name}',
-                builder: (context, state) => BaseDocumentToolScreen(toolType: tool),
+                builder: (context, state) {
+                  if (tool == DocumentToolType.jpgToPdf) {
+                    return const ImageToPdfScreen();
+                  }
+                  if (tool == DocumentToolType.pdfToJpg) {
+                    return const PdfToImageScreen();
+                  }
+                  return BaseDocumentToolScreen(toolType: tool);
+                },
               );
             }).toList(),
           ),

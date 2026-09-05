@@ -3,6 +3,8 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_borders.dart';
 import '../../../../core/theme/app_shadows.dart';
 import '../../domain/models/pdf_task_model.dart';
+import '../../../favorites/presentation/widgets/favorite_heart_icon.dart';
+import '../../../favorites/domain/models/favorite_tool_model.dart';
 
 class PdfToolCard extends StatelessWidget {
   final PdfToolType toolType;
@@ -87,7 +89,7 @@ class PdfToolCard extends StatelessWidget {
                   if (isComingSoon)
                     Positioned(
                       top: 0,
-                      right: 0,
+                      right: 32, // Offset to not overlap with heart icon
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                         decoration: BoxDecoration(
@@ -105,6 +107,20 @@ class PdfToolCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                  Positioned(
+                    top: -8,
+                    right: -8,
+                    child: FavoriteHeartIcon(
+                      tool: FavoriteToolItem(
+                        toolId: 'pdf_${toolType.name}',
+                        title: title,
+                        subtitle: description,
+                        iconCodePoint: icon.codePoint,
+                        colorValue: color.toARGB32(),
+                        route: '/home/pdf/${toolType.name}',
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

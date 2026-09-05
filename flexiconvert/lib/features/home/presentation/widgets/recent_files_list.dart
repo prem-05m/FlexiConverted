@@ -57,10 +57,12 @@ class _RecentFileTile extends StatelessWidget {
     if (mime.startsWith('video/')) return Icons.video_file;
     if (mime.startsWith('audio/')) return Icons.audio_file;
     if (mime == 'application/pdf') return Icons.picture_as_pdf;
-    if (mime.contains('word') || mime.contains('document'))
+    if (mime.contains('word') || mime.contains('document')) {
       return Icons.description;
-    if (mime.contains('zip') || mime.contains('archive'))
+    }
+    if (mime.contains('zip') || mime.contains('archive')) {
       return Icons.folder_zip;
+    }
     return Icons.insert_drive_file;
   }
 
@@ -69,8 +71,9 @@ class _RecentFileTile extends StatelessWidget {
     if (mime.startsWith('video/')) return Colors.blue;
     if (mime.startsWith('audio/')) return Colors.orange;
     if (mime == 'application/pdf') return Colors.red;
-    if (mime.contains('word') || mime.contains('document'))
+    if (mime.contains('word') || mime.contains('document')) {
       return Colors.indigo;
+    }
     if (mime.contains('zip')) return Colors.brown;
     return Colors.grey;
   }
@@ -78,8 +81,9 @@ class _RecentFileTile extends StatelessWidget {
   String _formatDate(DateTime dt) {
     final now = DateTime.now();
     final diff = now.difference(dt);
-    if (diff.inDays == 0)
+    if (diff.inDays == 0) {
       return 'Today, ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    }
     if (diff.inDays == 1) return 'Yesterday';
     return '${dt.day}/${dt.month}/${dt.year}';
   }

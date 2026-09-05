@@ -17,38 +17,48 @@ const HistoryItemSchema = CollectionSchema(
   name: r'HistoryItem',
   id: -4222060418120810312,
   properties: {
-    r'durationMs': PropertySchema(
+    r'cloudUrl': PropertySchema(
       id: 0,
+      name: r'cloudUrl',
+      type: IsarType.string,
+    ),
+    r'deviceName': PropertySchema(
+      id: 1,
+      name: r'deviceName',
+      type: IsarType.string,
+    ),
+    r'durationMs': PropertySchema(
+      id: 2,
       name: r'durationMs',
       type: IsarType.long,
     ),
     r'fileName': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'fileName',
       type: IsarType.string,
     ),
     r'fileSizeBytes': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'fileSizeBytes',
       type: IsarType.long,
     ),
     r'outputPath': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'outputPath',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'status',
       type: IsarType.string,
     ),
     r'timestamp': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'timestamp',
       type: IsarType.dateTime,
     ),
     r'toolType': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'toolType',
       type: IsarType.string,
     )
@@ -73,6 +83,18 @@ int _historyItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.cloudUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.deviceName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.fileName.length * 3;
   bytesCount += 3 + object.outputPath.length * 3;
   bytesCount += 3 + object.status.length * 3;
@@ -86,13 +108,15 @@ void _historyItemSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.durationMs);
-  writer.writeString(offsets[1], object.fileName);
-  writer.writeLong(offsets[2], object.fileSizeBytes);
-  writer.writeString(offsets[3], object.outputPath);
-  writer.writeString(offsets[4], object.status);
-  writer.writeDateTime(offsets[5], object.timestamp);
-  writer.writeString(offsets[6], object.toolType);
+  writer.writeString(offsets[0], object.cloudUrl);
+  writer.writeString(offsets[1], object.deviceName);
+  writer.writeLong(offsets[2], object.durationMs);
+  writer.writeString(offsets[3], object.fileName);
+  writer.writeLong(offsets[4], object.fileSizeBytes);
+  writer.writeString(offsets[5], object.outputPath);
+  writer.writeString(offsets[6], object.status);
+  writer.writeDateTime(offsets[7], object.timestamp);
+  writer.writeString(offsets[8], object.toolType);
 }
 
 HistoryItem _historyItemDeserialize(
@@ -102,14 +126,16 @@ HistoryItem _historyItemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = HistoryItem();
-  object.durationMs = reader.readLong(offsets[0]);
-  object.fileName = reader.readString(offsets[1]);
-  object.fileSizeBytes = reader.readLong(offsets[2]);
+  object.cloudUrl = reader.readStringOrNull(offsets[0]);
+  object.deviceName = reader.readStringOrNull(offsets[1]);
+  object.durationMs = reader.readLong(offsets[2]);
+  object.fileName = reader.readString(offsets[3]);
+  object.fileSizeBytes = reader.readLong(offsets[4]);
   object.id = id;
-  object.outputPath = reader.readString(offsets[3]);
-  object.status = reader.readString(offsets[4]);
-  object.timestamp = reader.readDateTime(offsets[5]);
-  object.toolType = reader.readString(offsets[6]);
+  object.outputPath = reader.readString(offsets[5]);
+  object.status = reader.readString(offsets[6]);
+  object.timestamp = reader.readDateTime(offsets[7]);
+  object.toolType = reader.readString(offsets[8]);
   return object;
 }
 
@@ -121,18 +147,22 @@ P _historyItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 5:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
+      return (reader.readDateTime(offset)) as P;
+    case 8:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -232,6 +262,313 @@ extension HistoryItemQueryWhere
 
 extension HistoryItemQueryFilter
     on QueryBuilder<HistoryItem, HistoryItem, QFilterCondition> {
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'cloudUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'cloudUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition> cloudUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'cloudUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'cloudUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'cloudUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition> cloudUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'cloudUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'cloudUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'cloudUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'cloudUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition> cloudUrlMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'cloudUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'cloudUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      cloudUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'cloudUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'deviceName',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'deviceName',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'deviceName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'deviceName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'deviceName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'deviceName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'deviceName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'deviceName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'deviceName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'deviceName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'deviceName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
+      deviceNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'deviceName',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<HistoryItem, HistoryItem, QAfterFilterCondition>
       durationMsEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
@@ -1002,6 +1339,30 @@ extension HistoryItemQueryLinks
 
 extension HistoryItemQuerySortBy
     on QueryBuilder<HistoryItem, HistoryItem, QSortBy> {
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> sortByCloudUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cloudUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> sortByCloudUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cloudUrl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> sortByDeviceName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deviceName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> sortByDeviceNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deviceName', Sort.desc);
+    });
+  }
+
   QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> sortByDurationMs() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationMs', Sort.asc);
@@ -1090,6 +1451,30 @@ extension HistoryItemQuerySortBy
 
 extension HistoryItemQuerySortThenBy
     on QueryBuilder<HistoryItem, HistoryItem, QSortThenBy> {
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> thenByCloudUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cloudUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> thenByCloudUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'cloudUrl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> thenByDeviceName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deviceName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> thenByDeviceNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deviceName', Sort.desc);
+    });
+  }
+
   QueryBuilder<HistoryItem, HistoryItem, QAfterSortBy> thenByDurationMs() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationMs', Sort.asc);
@@ -1190,6 +1575,20 @@ extension HistoryItemQuerySortThenBy
 
 extension HistoryItemQueryWhereDistinct
     on QueryBuilder<HistoryItem, HistoryItem, QDistinct> {
+  QueryBuilder<HistoryItem, HistoryItem, QDistinct> distinctByCloudUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'cloudUrl', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<HistoryItem, HistoryItem, QDistinct> distinctByDeviceName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'deviceName', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<HistoryItem, HistoryItem, QDistinct> distinctByDurationMs() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'durationMs');
@@ -1242,6 +1641,18 @@ extension HistoryItemQueryProperty
   QueryBuilder<HistoryItem, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<HistoryItem, String?, QQueryOperations> cloudUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'cloudUrl');
+    });
+  }
+
+  QueryBuilder<HistoryItem, String?, QQueryOperations> deviceNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'deviceName');
     });
   }
 

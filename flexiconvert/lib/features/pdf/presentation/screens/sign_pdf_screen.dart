@@ -174,7 +174,7 @@ class _SignPdfScreenState extends ConsumerState<SignPdfScreen> {
           scale: sig.scale,
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2 / sig.scale, style: BorderStyle.solid),
+              border: Border.all(color: Colors.blue.withValues(alpha: 0.5), width: 2 / sig.scale, style: BorderStyle.solid),
             ),
             child: Stack(
               clipBehavior: Clip.none,

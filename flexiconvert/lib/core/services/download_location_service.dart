@@ -15,9 +15,6 @@ class DownloadLocationService {
     String? targetDirectory;
 
     if (downloadPref == 'Ask Every Time') {
-      // For mobile, 'Ask Every Time' can mean picking a directory.
-      // FilePicker.saveFile is only fully supported on Desktop/Web.
-      // On mobile, picking a directory is more reliable.
       final selectedDir = await FilePicker.getDirectoryPath(
         dialogTitle: 'Select where to save $fileName',
       );
@@ -25,13 +22,30 @@ class DownloadLocationService {
       targetDirectory = selectedDir;
     } else if (downloadPref == 'Default Downloads') {
       if (Platform.isAndroid) {
-        // On Android, getDownloadsDirectory() might not be perfectly what users expect,
-        // but getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS) is the standard.
-        // We can fallback to getExternalStorageDirectory() if needed.
-        targetDirectory = '/storage/emulated/0/Download';
+        // As requested by user, use /storage/emulated/0/FlexiConverted
+        targetDirectory = '/storage/emulated/0/FlexiConverted';
+        final dir = Directory(targetDirectory);
+        if (!dir.existsSync()) {
+          try {
+            dir.createSync(recursive: true);
+          } catch (e) {
+            // Fallback if permission denied
+            targetDirectory = '/storage/emulated/0/Download/FlexiConverted';
+            final fallbackDir = Directory(targetDirectory);
+            if (!fallbackDir.existsSync()) {
+              fallbackDir.createSync(recursive: true);
+            }
+          }
+        }
       } else {
         final dir = await getDownloadsDirectory();
-        targetDirectory = dir?.path;
+        if (dir != null) {
+          targetDirectory = path.join(dir.path, 'FlexiConverted');
+          final targetDir = Directory(targetDirectory);
+          if (!targetDir.existsSync()) {
+            targetDir.createSync(recursive: true);
+          }
+        }
       }
       targetDirectory ??= (await getApplicationDocumentsDirectory()).path;
     } else {

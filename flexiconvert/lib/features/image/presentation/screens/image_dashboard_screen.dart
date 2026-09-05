@@ -14,12 +14,27 @@ class ImageDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tools = [
-      _ToolInfo(ImageToolType.convertFormat, 'Convert Format', 'JPG, PNG, WEBP, BMP, etc.', Icons.transform, Colors.blue),
-      _ToolInfo(ImageToolType.resize, 'Resize Image', 'Change image dimensions', Icons.photo_size_select_large, Colors.green),
+      _ToolInfo(ImageToolType.editImage, 'Image Edits', 'Pro Editor, Crop, Draw, Filters', Icons.edit_attributes, Colors.pink),
+      _ToolInfo(ImageToolType.convertFormat, 'Convert Image', 'JPG, PNG, WEBP, BMP, etc.', Icons.transform, Colors.blue),
       _ToolInfo(ImageToolType.compress, 'Compress Image', 'Reduce image file size', Icons.compress, Colors.orange),
       _ToolInfo(ImageToolType.crop, 'Crop Image', 'Crop to specific aspect ratio', Icons.crop, Colors.red),
       _ToolInfo(ImageToolType.rotate, 'Rotate Image', 'Rotate by 90/180/270 degrees', Icons.rotate_right, Colors.purple),
       _ToolInfo(ImageToolType.flip, 'Flip Image', 'Mirror image horizontally/vertically', Icons.flip, Colors.teal),
+      
+      // New Tools
+      _ToolInfo(ImageToolType.adjust, 'Adjust Image', 'Brightness, contrast, saturation', Icons.tune, Colors.indigo),
+      _ToolInfo(ImageToolType.addText, 'Add Text', 'Add text overlay to image', Icons.text_fields, Colors.brown),
+      _ToolInfo(ImageToolType.addWatermark, 'Add Watermark', 'Add logo or watermark', Icons.branding_watermark, Colors.deepOrange),
+      _ToolInfo(ImageToolType.blur, 'Blur Image', 'Apply blur effects', Icons.blur_on, Colors.blueGrey),
+      _ToolInfo(ImageToolType.pixelate, 'Pixelate', 'Censor or mosaic image', Icons.grid_on, Colors.deepPurple),
+      _ToolInfo(ImageToolType.metadataViewer, 'Metadata Viewer', 'View EXIF data', Icons.info_outline, Colors.cyan),
+      _ToolInfo(ImageToolType.removeMetadata, 'Remove Metadata', 'Strip EXIF/GPS data', Icons.security, Colors.amber),
+      _ToolInfo(ImageToolType.dpiResolution, 'DPI / Resolution', 'Change print resolution', Icons.print, Colors.lightBlue),
+      _ToolInfo(ImageToolType.colorMode, 'Color Mode', 'Grayscale, CMYK, RGB', Icons.color_lens, Colors.pink),
+      _ToolInfo(ImageToolType.batchConvert, 'Batch Convert', 'Convert multiple images', Icons.collections, Colors.indigoAccent),
+      _ToolInfo(ImageToolType.batchResize, 'Batch Resize', 'Resize multiple images', Icons.photo_library, Colors.greenAccent),
+      _ToolInfo(ImageToolType.batchCompress, 'Batch Compress', 'Compress multiple images', Icons.folder_zip, Colors.orangeAccent),
+
     ];
 
     return Scaffold(

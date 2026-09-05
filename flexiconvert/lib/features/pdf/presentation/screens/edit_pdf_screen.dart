@@ -346,8 +346,8 @@ class _EditPdfScreenState extends ConsumerState<EditPdfScreen> {
           : _buildEditorWorkspace(),
       floatingActionButton: _filePath != null ? FloatingActionButton(
         onPressed: _showLayerPanel,
-        child: const Icon(Icons.layers),
         tooltip: 'Layer Panel',
+        child: const Icon(Icons.layers),
       ) : null,
     );
   }
@@ -449,7 +449,7 @@ class _EditPdfScreenState extends ConsumerState<EditPdfScreen> {
                               layer: layer,
                               isSelected: _selectedLayerId == layer.id,
                               onTap: () => setState(() => _selectedLayerId = layer.id),
-                              onDoubleTap: layer is TextLayer ? () => _editTextLayer(layer as TextLayer) : null,
+                              onDoubleTap: layer is TextLayer ? () => _editTextLayer(layer) : null,
                               onMove: (dx, dy) => setState(() {
                                 layer.x += dx;
                                 layer.y += dy;
@@ -505,7 +505,7 @@ class _EditPdfScreenState extends ConsumerState<EditPdfScreen> {
       return Container(
         width: double.infinity,
         height: double.infinity,
-        color: Colors.white.withOpacity(0.5),
+        color: Colors.white.withValues(alpha: 0.5),
         child: Center(
           child: Text(
             layer.text,

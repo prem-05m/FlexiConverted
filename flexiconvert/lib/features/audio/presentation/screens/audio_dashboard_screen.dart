@@ -14,16 +14,27 @@ class AudioDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tools = [
-      _ToolInfo(AudioToolType.convertFormat, 'Convert Audio', 'MP3, WAV, AAC, etc.', Icons.audiotrack, Colors.blue),
+      _ToolInfo(AudioToolType.convertFormat, 'Convert Audio', 'MP3, WAV, FLAC, etc.', Icons.audio_file, Colors.blue),
       _ToolInfo(AudioToolType.compress, 'Compress Audio', 'Reduce file size', Icons.compress, Colors.green),
       _ToolInfo(AudioToolType.trim, 'Trim Audio', 'Cut start or end', Icons.content_cut, Colors.orange),
       _ToolInfo(AudioToolType.merge, 'Merge Audio', 'Combine multiple files', Icons.merge_type, Colors.red),
-      _ToolInfo(AudioToolType.normalizeVolume, 'Normalize Volume', 'Even out sound levels', Icons.volume_up, Colors.purple),
-      _ToolInfo(AudioToolType.increaseVolume, 'Increase Volume', 'Make audio louder', Icons.volume_up, Colors.teal),
-      _ToolInfo(AudioToolType.reduceNoise, 'Reduce Noise', 'Clean up background noise', Icons.noise_control_off, Colors.indigo),
-      _ToolInfo(AudioToolType.fadeIn, 'Fade In', 'Gradually increase volume', Icons.arrow_forward_ios, Colors.pink),
-      _ToolInfo(AudioToolType.fadeOut, 'Fade Out', 'Gradually decrease volume', Icons.arrow_back_ios, Colors.cyan),
-      _ToolInfo(AudioToolType.metadataEditor, 'Edit Metadata', 'Change title, artist, etc.', Icons.edit, Colors.amber),
+      _ToolInfo(AudioToolType.extractAudio, 'Extract Audio', 'Get audio from video', Icons.video_file, Colors.purple),
+      _ToolInfo(AudioToolType.normalizeVolume, 'Normalize Volume', 'Even out audio levels', Icons.graphic_eq, Colors.teal),
+      _ToolInfo(AudioToolType.increaseVolume, 'Increase Volume', 'Boost audio volume', Icons.volume_up, Colors.indigo),
+      _ToolInfo(AudioToolType.reduceNoise, 'Reduce Noise', 'Remove background noise', Icons.noise_control_off, Colors.pink),
+      _ToolInfo(AudioToolType.fadeIn, 'Fade In', 'Gradual volume increase', Icons.trending_up, Colors.cyan),
+      
+      // New Tools
+      _ToolInfo(AudioToolType.fadeOut, 'Fade Out', 'Gradual volume decrease', Icons.trending_down, Colors.blueGrey),
+      _ToolInfo(AudioToolType.split, 'Cut / Split', 'Split audio into parts', Icons.splitscreen, Colors.brown),
+      _ToolInfo(AudioToolType.addAudioToVideo, 'Add to Video', 'Mix audio with video', Icons.video_call, Colors.redAccent),
+      _ToolInfo(AudioToolType.changePitch, 'Change Pitch', 'Alter audio pitch', Icons.multiline_chart, Colors.deepPurple),
+      _ToolInfo(AudioToolType.stereoMono, 'Mono ↔ Stereo', 'Change channel layout', Icons.speaker_group, Colors.indigoAccent),
+      _ToolInfo(AudioToolType.removeSilence, 'Remove Silence', 'Delete silent gaps', Icons.hearing_disabled, Colors.grey),
+      _ToolInfo(AudioToolType.metadataEditor, 'Metadata Editor', 'Edit ID3 tags', Icons.edit_note, Colors.lightGreen),
+      _ToolInfo(AudioToolType.removeMetadata, 'Remove Metadata', 'Strip all tags', Icons.security, Colors.deepOrange),
+      _ToolInfo(AudioToolType.batchConvert, 'Batch Convert', 'Process multiple files', Icons.library_music, Colors.tealAccent),
+      _ToolInfo(AudioToolType.audioWaveform, 'Audio Waveform', 'Generate waveform image', Icons.waves, Colors.blueAccent),
     ];
 
     return Scaffold(

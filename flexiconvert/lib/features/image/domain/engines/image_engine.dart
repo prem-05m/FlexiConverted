@@ -50,4 +50,21 @@ abstract class ImageEngine implements MediaEngine {
     required bool horizontal,
     required bool vertical,
   });
+
+  Future<EngineResponse<ImageResult>> removeMetadata({
+    required String inputPath,
+    required String outputPath,
+  });
+
+  Future<EngineResponse<ImageResult>> colorMode({
+    required String inputPath,
+    required String outputPath,
+    required String mode, // grayscale, cmyk
+  });
+
+  Future<EngineResponse<ImageResult>> dpiResolution({
+    required String inputPath,
+    required String outputPath,
+    required int dpi,
+  });
 }

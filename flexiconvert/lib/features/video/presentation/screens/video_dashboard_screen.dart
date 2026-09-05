@@ -24,6 +24,22 @@ class VideoDashboardScreen extends StatelessWidget {
       _ToolInfo(VideoToolType.changeFps, 'Change FPS', 'Modify frame rate', Icons.speed, Colors.pink),
       _ToolInfo(VideoToolType.rotate, 'Rotate Video', 'Rotate video angle', Icons.rotate_right, Colors.cyan),
       _ToolInfo(VideoToolType.generateGif, 'Video to GIF', 'Create animated GIF', Icons.gif, Colors.amber),
+      
+      // New Tools
+      _ToolInfo(VideoToolType.cutSplit, 'Cut / Split', 'Split video into parts', Icons.splitscreen, Colors.brown),
+      _ToolInfo(VideoToolType.crop, 'Crop Video', 'Crop video frame', Icons.crop, Colors.redAccent),
+      _ToolInfo(VideoToolType.flip, 'Flip Video', 'Mirror video horizontally/vertically', Icons.flip, Colors.deepPurple),
+      _ToolInfo(VideoToolType.addAudio, 'Add Audio', 'Mix audio with video', Icons.library_music, Colors.indigoAccent),
+      _ToolInfo(VideoToolType.replaceAudio, 'Replace Audio', 'Change video soundtrack', Icons.audio_file, Colors.blueGrey),
+      _ToolInfo(VideoToolType.removeAudio, 'Remove Audio', 'Strip sound completely', Icons.music_off, Colors.grey),
+      _ToolInfo(VideoToolType.gifToVideo, 'GIF to Video', 'Convert GIF to MP4', Icons.movie_creation, Colors.lightGreen),
+      _ToolInfo(VideoToolType.videoToImages, 'Video to Images', 'Extract all frames', Icons.burst_mode, Colors.deepOrange),
+      _ToolInfo(VideoToolType.imagesToVideo, 'Images to Video', 'Create video from images', Icons.video_call, Colors.tealAccent),
+      _ToolInfo(VideoToolType.generateThumbnail, 'Generate Thumbnail', 'Extract single frame', Icons.image, Colors.pinkAccent),
+      _ToolInfo(VideoToolType.addText, 'Add Text', 'Add subtitles or text', Icons.subtitles, Colors.blueAccent),
+      _ToolInfo(VideoToolType.addWatermark, 'Add Watermark', 'Overlay image logo', Icons.branding_watermark, Colors.lightBlue),
+      _ToolInfo(VideoToolType.changeAspectRatio, 'Aspect Ratio', '16:9, 4:3, 1:1, etc.', Icons.crop_16_9, Colors.amberAccent),
+      _ToolInfo(VideoToolType.batchConvert, 'Batch Convert', 'Process multiple videos', Icons.video_collection, Colors.deepPurpleAccent),
     ];
 
     return Scaffold(

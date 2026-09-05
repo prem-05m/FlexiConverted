@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import '../../../../core/constants/route_constants.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/animated_app_bar.dart';
@@ -44,7 +44,16 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
       selectedFiles = paths;
     });
     if (paths.isNotEmpty) {
-      _fileNameCtrl.text = 'FlexiConvert_Doc.pdf';
+      final inputName = path.basenameWithoutExtension(paths.first);
+      String ext = 'pdf';
+      switch (widget.toolType) {
+        case DocumentToolType.pdfToWord: ext = 'docx'; break;
+        case DocumentToolType.pdfToPpt: ext = 'pptx'; break;
+        case DocumentToolType.pdfToExcel: ext = 'xlsx'; break;
+        case DocumentToolType.csvToExcel: ext = 'xlsx'; break;
+        default: ext = 'pdf';
+      }
+      _fileNameCtrl.text = '$inputName.$ext';
     }
   }
 
@@ -97,6 +106,21 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
       }
     }
   }
+  List<String> get _allowedExtensions {
+    switch (widget.toolType) {
+      case DocumentToolType.wordToPdf:
+        return ['doc', 'docx'];
+      case DocumentToolType.pptToPdf:
+        return ['ppt', 'pptx'];
+      case DocumentToolType.excelToPdf:
+        return ['xls', 'xlsx'];
+      case DocumentToolType.pdfToWord:
+      case DocumentToolType.pdfToPpt:
+      case DocumentToolType.pdfToExcel:
+      default:
+        return ['pdf'];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +135,7 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
               subtitle: 'Drag and drop or browse to choose files',
               icon: Icons.upload_file,
               allowMultiple: false,
+              allowedExtensions: _allowedExtensions,
               onFilesSelected: _onFilesSelected,
             ),
             if (selectedFiles.isNotEmpty) ...[
@@ -135,6 +160,15 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
                     ),
                   );
                 },
+              ),
+              SizedBox(height: AppSpacing.lg),
+              TextField(
+                controller: _fileNameCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Output File Name',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.edit_document),
+                ),
               ),
               SizedBox(height: AppSpacing.xxl),
               CustomButton(

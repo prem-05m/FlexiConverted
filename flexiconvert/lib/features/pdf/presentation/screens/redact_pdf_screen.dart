@@ -46,7 +46,7 @@ class _RedactPdfScreenState extends ConsumerState<RedactPdfScreen> {
   Offset? _currentPos;
   String _mode = 'box'; // 'box', 'draw'
   String _actionType = 'clear'; // 'clear', 'paint', 'blur'
-  Color _selectedColor = Colors.black;
+  final Color _selectedColor = Colors.black;
   double _opacity = 1.0;
 
   @override
@@ -185,7 +185,7 @@ class _RedactPdfScreenState extends ConsumerState<RedactPdfScreen> {
                             bounds: Rect.fromPoints(_startPos!, _currentPos!),
                             color: _actionType == 'clear' 
                                 ? Colors.white 
-                                : _selectedColor.withOpacity(_actionType == 'blur' ? (_opacity == 1.0 ? 0.5 : _opacity) : _opacity),
+                                : _selectedColor.withValues(alpha: _actionType == 'blur' ? (_opacity == 1.0 ? 0.5 : _opacity) : _opacity),
                           ));
                           _startPos = null;
                           _currentPos = null;
@@ -249,7 +249,7 @@ class _RedactPdfScreenState extends ConsumerState<RedactPdfScreen> {
         'y': r.bounds.top,
         'width': r.bounds.width,
         'height': r.bounds.height,
-        'color': r.color.value,
+        'color': r.color.toARGB32(),
       };
     }).toList();
     
@@ -295,7 +295,7 @@ class RedactionPainter extends CustomPainter {
     
     if (currentStart != null && currentEnd != null) {
       final paint = Paint()
-        ..color = Colors.red.withOpacity(0.5)
+        ..color = Colors.red.withValues(alpha: 0.5)
         ..style = PaintingStyle.fill;
       canvas.drawRect(Rect.fromPoints(currentStart!, currentEnd!), paint);
     }

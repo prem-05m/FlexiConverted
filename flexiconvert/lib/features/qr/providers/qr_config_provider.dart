@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../domain/models/qr_config_model.dart';
-import 'package:flutter/material.dart';
 
 part 'qr_config_provider.g.dart';
 

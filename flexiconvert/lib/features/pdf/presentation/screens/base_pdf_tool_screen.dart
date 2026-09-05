@@ -94,11 +94,11 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
   final TextEditingController _customSizeCtrl = TextEditingController();
 
   // ── OCR PDF state ──────────────────────────────────────────────────────────
-  bool _ocrMergeOutput = true;
+  final bool _ocrMergeOutput = true;
   final Map<String, int> _ocrRotations = {};
   final Map<String, Uint8List?> _ocrPreviews = {};
   String _ocrMode = 'online';          // 'online' | 'offline'
-  String _ocrOutputFormat = 'pdf';     // 'pdf' | 'txt'
+  final String _ocrOutputFormat = 'pdf';     // 'pdf' | 'txt'
 
   // ── Rotate PDF state ───────────────────────────────────────────────────────
   // Single PDF: page-level angles
@@ -126,7 +126,7 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
   final TextEditingController _confirmPasswordCtrl = TextEditingController();
   bool _obscurePassword = true;
   Uint8List? _encryptPreview;
-  bool _removePassword = false;
+  final bool _removePassword = false;
 
   // PDF to Markdown state
   bool _pdfToMarkdownGenerateSummary = false;
@@ -992,8 +992,11 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
                       contentPadding: EdgeInsets.zero,
                       onChanged: (v) {
                         setState(() {
-                          if (widget.toolType == PdfToolType.cropPdf) _cropApplyTo = v!;
-                          else _saveAsFormat = v!;
+                          if (widget.toolType == PdfToolType.cropPdf) {
+                            _cropApplyTo = v!;
+                          } else {
+                            _saveAsFormat = v!;
+                          }
                         });
                       },
                     )),
@@ -1004,8 +1007,11 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
                       contentPadding: EdgeInsets.zero,
                       onChanged: (v) {
                         setState(() {
-                          if (widget.toolType == PdfToolType.cropPdf) _cropApplyTo = v!;
-                          else _saveAsFormat = v!;
+                          if (widget.toolType == PdfToolType.cropPdf) {
+                            _cropApplyTo = v!;
+                          } else {
+                            _saveAsFormat = v!;
+                          }
                         });
                       },
                     )),
@@ -1652,7 +1658,7 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
   Widget _buildCompressOption({required int level, required String title, required String subtitle, required IconData icon}) {
     final isSelected = _compressLevel == level;
     final theme = Theme.of(context);
-    final color = isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withOpacity(0.6);
+    final color = isSelected ? theme.colorScheme.primary : theme.colorScheme.onSurface.withValues(alpha: 0.6);
     return InkWell(
       onTap: () => setState(() => _compressLevel = level),
       borderRadius: BorderRadius.circular(12),
@@ -1664,7 +1670,7 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
-          color: isSelected ? theme.colorScheme.primaryContainer.withOpacity(0.2) : Colors.transparent,
+          color: isSelected ? theme.colorScheme.primaryContainer.withValues(alpha: 0.2) : Colors.transparent,
         ),
         child: Row(
           children: [
@@ -1721,10 +1727,10 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: _ocrMode == 'online' ? Colors.blue.withOpacity(0.08) : Colors.green.withOpacity(0.08),
+            color: _ocrMode == 'online' ? Colors.blue.withValues(alpha: 0.08) : Colors.green.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: _ocrMode == 'online' ? Colors.blue.withOpacity(0.3) : Colors.green.withOpacity(0.3),
+              color: _ocrMode == 'online' ? Colors.blue.withValues(alpha: 0.3) : Colors.green.withValues(alpha: 0.3),
             ),
           ),
           child: Row(
@@ -1893,7 +1899,7 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
                           color: Colors.black54,
                           padding: const EdgeInsets.symmetric(vertical: 3),
                           child: Text(
-                            'Page $pageNum  •  ${angle}°',
+                            'Page $pageNum  •  $angle°',
                             textAlign: TextAlign.center,
                             style: const TextStyle(color: Colors.white, fontSize: 11),
                           ),

@@ -3,6 +3,8 @@ import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/theme/app_borders.dart';
 import '../../../../core/theme/app_shadows.dart';
 import '../../domain/models/audio_task_model.dart';
+import '../../../favorites/presentation/widgets/favorite_heart_icon.dart';
+import '../../../favorites/domain/models/favorite_tool_model.dart';
 
 class AudioToolCard extends StatelessWidget {
   final AudioToolType toolType;
@@ -38,41 +40,59 @@ class AudioToolCard extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: AppBorders.lg,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: AppBorders.md,
-                  ),
-                  child: Icon(icon, color: color, size: 28),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  title,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Expanded(
-                  child: Text(
-                    description,
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.1),
+                        borderRadius: AppBorders.md,
+                      ),
+                      child: Icon(icon, color: color, size: 28),
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    const SizedBox(height: 16),
+                    Text(
+                      title,
+                      style: context.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Expanded(
+                      child: Text(
+                        description,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: -8,
+                right: -8,
+                child: FavoriteHeartIcon(
+                  tool: FavoriteToolItem(
+                    toolId: 'audio_${toolType.name}',
+                    title: title,
+                    subtitle: description,
+                    iconCodePoint: icon.codePoint,
+                    colorValue: color.toARGB32(),
+                    route: '/home/audio/${toolType.name}',
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
