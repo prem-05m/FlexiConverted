@@ -322,6 +322,45 @@ async def _run_conversion(job_id: str):
         print(f"[FAIL] Job {job_id} failed: {e}")
 
 
+def _apply_ocr(input_path: str, out_dir: str, name: str) -> str:
+    import pytesseract
+    from PIL import Image
+    from reportlab.pdfgen import canvas as rl_canvas
+    from reportlab.lib.pagesizes import A4
+    import fitz
+    import tempfile
+    import os
+
+    doc     = fitz.open(input_path)
+    out     = f"{out_dir}/{name}_ocr.pdf"
+    c       = rl_canvas.Canvas(out, pagesize=A4)
+    w, h    = A4
+
+    for page in doc:
+        pix  = page.get_pixmap(dpi=200)
+        tmp  = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+        pix.save(tmp.name)
+
+        img      = Image.open(tmp.name)
+        ocr_data = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
+        c.drawImage(tmp.name, 0, 0, width=w, height=h)
+
+        for i, word in enumerate(ocr_data["text"]):
+            if not word.strip():
+                continue
+            x   = ocr_data["left"][i]   / img.width  * w
+            y_t = ocr_data["top"][i]    / img.height * h
+            c.setFillColorRGB(1, 1, 1, 0)
+            c.setFont("Helvetica", max(6, int(ocr_data["height"][i] / img.height * h)))
+            c.drawString(x, h - y_t, word)
+
+        os.unlink(tmp.name)
+        c.showPage()
+
+    c.save()
+    return out
+
+
 def _convert_sync(tool_type: str, input_path: str, out_dir: str, params: dict) -> str:
     """
     Synchronous conversion logic (runs in executor thread).
@@ -329,6 +368,16 @@ def _convert_sync(tool_type: str, input_path: str, out_dir: str, params: dict) -
     """
     inp  = Path(input_path)
     name = inp.stem
+
+    # If OCR is requested for PDF to Office, do it first
+    use_ocr = params.get("useOcr") == True
+    if use_ocr and tool_type in ("pdf_to_docx", "pdf_to_xlsx", "pdf_to_pptx"):
+        input_path = _apply_ocr(input_path, out_dir, name)
+        inp = Path(input_path)
+
+    # ── PDF OCR (standalone tool) ────────────────────────────────────────────
+    if tool_type == "pdf_ocr":
+        return _apply_ocr(input_path, out_dir, name)
 
     # ── PDF → Word (.docx) ──────────────────────────────────────────────────
     if tool_type == "pdf_to_docx":
@@ -395,41 +444,6 @@ def _convert_sync(tool_type: str, input_path: str, out_dir: str, params: dict) -
         out = f"{out_dir}/{name}.pdf"
         return out
 
-    # ── PDF OCR (makes scanned PDF searchable via Tesseract) ─────────────────
-    if tool_type == "pdf_ocr":
-        import pytesseract
-        from PIL import Image
-        from reportlab.pdfgen import canvas as rl_canvas
-        from reportlab.lib.pagesizes import A4
-        import fitz  # PyMuPDF – add to requirements if needed
 
-        doc     = fitz.open(input_path)
-        out     = f"{out_dir}/{name}_ocr.pdf"
-        c       = rl_canvas.Canvas(out, pagesize=A4)
-        w, h    = A4
-
-        for page in doc:
-            pix  = page.get_pixmap(dpi=200)
-            tmp  = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-            pix.save(tmp.name)
-
-            img      = Image.open(tmp.name)
-            ocr_data = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
-            c.drawImage(tmp.name, 0, 0, width=w, height=h)
-
-            for i, word in enumerate(ocr_data["text"]):
-                if not word.strip():
-                    continue
-                x   = ocr_data["left"][i]   / img.width  * w
-                y_t = ocr_data["top"][i]    / img.height * h
-                c.setFillColorRGB(1, 1, 1, 0)
-                c.setFont("Helvetica", max(6, int(ocr_data["height"][i] / img.height * h)))
-                c.drawString(x, h - y_t, word)
-
-            os.unlink(tmp.name)
-            c.showPage()
-
-        c.save()
-        return out
 
     raise ValueError(f"Unsupported tool_type: '{tool_type}'")

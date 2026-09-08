@@ -26,6 +26,7 @@ class BaseDocumentToolScreen extends ConsumerStatefulWidget {
 class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen> {
   List<String> selectedFiles = [];
   final TextEditingController _fileNameCtrl = TextEditingController();
+  bool _useOcr = false;
 
   String get _title {
     return widget.toolType.name
@@ -74,7 +75,9 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
 
     await ref.read(documentTaskProvider.notifier).executeTask(
       outputPath: outputPath,
-      additionalParams: {}
+      additionalParams: {
+        'useOcr': _useOcr,
+      }
     );
 
     final duration = DateTime.now().difference(startTime).inMilliseconds;
@@ -107,6 +110,7 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
       }
     }
   }
+  
   List<String> get _allowedExtensions {
     switch (widget.toolType) {
       case DocumentToolType.wordToPdf:
@@ -171,6 +175,22 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
                   prefixIcon: Icon(Icons.edit_document),
                 ),
               ),
+              if (widget.toolType == DocumentToolType.pdfToWord || 
+                  widget.toolType == DocumentToolType.pdfToExcel || 
+                  widget.toolType == DocumentToolType.pdfToPpt) ...[
+                SizedBox(height: AppSpacing.md),
+                SwitchListTile(
+                  title: const Text('Enable OCR', style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: const Text('Convert scanned PDFs or images into editable text'),
+                  value: _useOcr,
+                  activeColor: Colors.blue,
+                  onChanged: (val) => setState(() => _useOcr = val),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                  ),
+                ),
+              ],
               SizedBox(height: AppSpacing.xxl),
               CustomButton(
                 text: 'Process Document',
