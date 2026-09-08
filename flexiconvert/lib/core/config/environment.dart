@@ -10,7 +10,7 @@ class EnvironmentConfig {
           environment: env,
           appName: 'FlexiConvert Dev',
           // Auto-detected PC Wi-Fi IP for physical device testing
-          baseUrl: 'http://192.168.29.117:8000',
+          baseUrl: 'https://flexiconverted-2.onrender.com',
         );
         break;
       case Environment.staging:
@@ -25,7 +25,7 @@ class EnvironmentConfig {
           environment: env,
           appName: 'FlexiConvert',
           // TODO: Replace with your actual Render deployment URL
-          baseUrl: 'https://flexiconvert-api.onrender.com',
+          baseUrl: 'https://flexiconverted-2.onrender.com',
         );
         break;
     }
