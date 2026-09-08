@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/database/database_provider.dart';
 import '../../../../core/database/models/settings_model.dart';
@@ -12,7 +13,8 @@ final settingsProvider = StreamProvider<AppSettings>((ref) async* {
       ..languageCode = 'en'
       ..notificationsEnabled = true
       ..defaultSaveDirectory = 'Ask Every Time'
-      ..autoDeleteOriginal = false;
+      ..autoDeleteOriginal = false
+      ..multipleFileDownloadPref = 'ask';
       
     await db.putSettings(settings);
   }
@@ -59,6 +61,23 @@ class SettingsNotifier {
     final settings = await db.getSettings(1);
     if (settings != null) {
       settings.defaultSaveDirectory = directory;
+      await db.putSettings(settings);
+      
+      if (directory != 'Ask Every Time' && directory != 'Default Downloads') {
+        try {
+          final dir = Directory(directory);
+          if (!dir.existsSync()) {
+            dir.createSync(recursive: true);
+          }
+        } catch (_) {}
+      }
+    }
+  }
+
+  Future<void> updateMultipleFileDownloadPref(String pref) async {
+    final settings = await db.getSettings(1);
+    if (settings != null) {
+      settings.multipleFileDownloadPref = pref;
       await db.putSettings(settings);
     }
   }

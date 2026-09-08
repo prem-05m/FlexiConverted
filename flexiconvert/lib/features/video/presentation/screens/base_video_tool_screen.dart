@@ -26,8 +26,8 @@ class _BaseVideoToolScreenState extends ConsumerState<BaseVideoToolScreen> {
       title: _title,
       toolTypeEnumString: widget.toolType.name,
       mediaType: MediaType.video,
-      allowedExtensions: const ['mp4', 'avi', 'mov', 'mkv', 'flv', 'wmv', 'webm', 'mpeg'],
-      outputFormats: const ['mp4', 'avi', 'mov', 'mkv'],
+      allowedExtensions: const ['mp4', 'mkv', 'mov', 'avi', 'webm', 'flv', 'ts', 'm4v', '3gp', 'mpeg', 'mpg', 'ogv', 'gif'],
+      outputFormats: const ['mp4', 'mkv', 'mov', 'avi', 'webm', 'flv', 'ts', 'm4v', '3gp', 'mpeg', 'mpg', 'ogv', 'gif'],
     );
   }
 }

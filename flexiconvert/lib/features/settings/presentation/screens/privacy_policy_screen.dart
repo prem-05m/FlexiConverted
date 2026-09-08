@@ -65,7 +65,7 @@ const List<(String, String)> _sections = [
   ),
   (
     'File Processing',
-    'All file conversions are performed entirely on your device. Your files are NOT uploaded to any server. We do not have access to the content of any files you convert. Converted files are saved to the location you choose on your device.',
+    'All file conversions (including heavy video/audio processing) are performed entirely offline on your device using FFmpeg. Your files are NOT uploaded to any server. This guarantees 100% privacy, but please note that processing large files locally may be slower on older devices and will drain your battery faster than server-based processing. Converted files are saved to the location you choose on your device.',
   ),
   (
     'Authentication',

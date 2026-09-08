@@ -9,22 +9,23 @@ class EnvironmentConfig {
         config = AppConfig(
           environment: env,
           appName: 'FlexiConvert Dev',
-          // 10.0.2.2 is the localhost alias for the Android Emulator
-          baseUrl: 'http://10.0.2.2:3000',
+          // Auto-detected PC Wi-Fi IP for physical device testing
+          baseUrl: 'http://192.168.29.117:8000',
         );
         break;
       case Environment.staging:
         config = AppConfig(
           environment: env,
           appName: 'FlexiConvert Staging',
-          baseUrl: 'https://staging.api.flexiconvert.com',
+          baseUrl: 'https://staging-api.flexiconvert.com',
         );
         break;
       case Environment.prod:
         config = AppConfig(
           environment: env,
           appName: 'FlexiConvert',
-          baseUrl: 'https://api.flexiconvert.com',
+          // TODO: Replace with your actual Render deployment URL
+          baseUrl: 'https://flexiconvert-api.onrender.com',
         );
         break;
     }

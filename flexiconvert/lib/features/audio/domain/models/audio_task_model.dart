@@ -7,6 +7,7 @@ enum AudioToolType {
   compress,
   trim,
   split,
+  cut,
   merge,
   extractAudio,
   normalizeVolume,
@@ -52,6 +53,7 @@ class AudioTaskState with _$AudioTaskState {
     @Default(0.0) double progress,
     @Default(TaskStatus.idle) TaskStatus status,
     String? errorMessage,
+    String? cloudUrl,
   }) = _AudioTaskState;
 }
 

@@ -15,6 +15,8 @@ import '../../features/settings/presentation/screens/privacy_policy_screen.dart'
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/search/presentation/screens/search_screen.dart';
 import '../../features/history/presentation/screens/history_screen.dart';
+import '../../features/history/presentation/screens/history_detail_screen.dart';
+import '../database/models/history_model.dart';
 import '../../features/favorites/presentation/screens/favorites_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/about/presentation/screens/about_screen.dart';
@@ -28,6 +30,10 @@ import '../../features/pdf/presentation/screens/pdf_to_image_screen.dart';
 import '../../features/pdf/presentation/screens/sign_pdf_screen.dart';
 import '../../features/pdf/presentation/screens/redact_pdf_screen.dart';
 import '../../features/pdf/domain/models/pdf_task_model.dart';
+import '../../features/audio/presentation/screens/audio_dashboard_screen.dart';
+import '../../features/audio/presentation/screens/base_audio_tool_screen.dart';
+import '../../features/audio/presentation/screens/audio_editor_screen.dart';
+import '../../features/archive/presentation/screens/archive_dashboard_screen.dart';
 import '../../features/image/presentation/screens/image_dashboard_screen.dart';
 import '../../features/image/presentation/screens/base_image_tool_screen.dart';
 import '../../features/image/presentation/screens/image_editor_dashboard_screen.dart';
@@ -38,10 +44,7 @@ import '../../features/document/domain/models/document_task_model.dart';
 import '../../features/video/presentation/screens/video_dashboard_screen.dart';
 import '../../features/video/presentation/screens/base_video_tool_screen.dart';
 import '../../features/video/domain/models/video_task_model.dart';
-import '../../features/audio/presentation/screens/audio_dashboard_screen.dart';
-import '../../features/audio/presentation/screens/base_audio_tool_screen.dart';
 import '../../features/audio/domain/models/audio_task_model.dart';
-import '../../features/archive/presentation/screens/archive_dashboard_screen.dart';
 import '../../features/archive/presentation/screens/base_archive_tool_screen.dart';
 import '../../features/archive/domain/models/archive_task_model.dart';
 import '../../features/qr/presentation/screens/qr_dashboard_screen.dart';
@@ -220,15 +223,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: RouteConstants.audio,
             name: RouteConstants.audio,
             builder: (context, state) => const AudioDashboardScreen(),
-            routes: [
-              GoRoute(
-                path: '${RouteConstants.audio}/tool',
+            routes: AudioToolType.values.map((tool) {
+              return GoRoute(
+                path: tool.name,
+                name: 'audio_${tool.name}',
                 builder: (context, state) {
-                  final toolType = state.extra as AudioToolType;
-                  return BaseAudioToolScreen(toolType: toolType);
-                },
-              ),
-            ],
+                  if (tool == AudioToolType.trim || tool == AudioToolType.split || tool == AudioToolType.cut || tool == AudioToolType.changePitch) {
+                    return AudioEditorScreen(toolType: tool);
+                  }
+                  return BaseAudioToolScreen(toolType: tool);
+                }
+              );
+            }).toList(),
           ),
           GoRoute(
             path: RouteConstants.archive,
@@ -289,6 +295,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteConstants.history,
         name: RouteConstants.history,
         builder: (context, state) => const HistoryScreen(),
+        routes: [
+          GoRoute(
+            path: RouteConstants.historyDetail,
+            name: RouteConstants.historyDetail,
+            builder: (context, state) {
+              final item = state.extra as HistoryItem;
+              return HistoryDetailScreen(item: item);
+            },
+          ),
+        ]
       ),
       GoRoute(
         path: RouteConstants.favorites,

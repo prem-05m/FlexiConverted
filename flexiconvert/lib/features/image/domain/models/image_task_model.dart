@@ -46,6 +46,7 @@ class ImageTaskState with _$ImageTaskState {
     @Default(0.0) double progress,
     @Default(TaskStatus.idle) TaskStatus status,
     String? errorMessage,
+    String? cloudUrl,
   }) = _ImageTaskState;
 }
 

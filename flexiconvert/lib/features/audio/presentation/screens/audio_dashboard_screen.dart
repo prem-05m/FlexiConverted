@@ -26,7 +26,8 @@ class AudioDashboardScreen extends StatelessWidget {
       
       // New Tools
       _ToolInfo(AudioToolType.fadeOut, 'Fade Out', 'Gradual volume decrease', Icons.trending_down, Colors.blueGrey),
-      _ToolInfo(AudioToolType.split, 'Cut / Split', 'Split audio into parts', Icons.splitscreen, Colors.brown),
+      _ToolInfo(AudioToolType.split, 'Split Audio', 'Split audio into 2 parts', Icons.call_split, Colors.brown),
+      _ToolInfo(AudioToolType.cut, 'Cut Audio', 'Cut audio into 3 parts', Icons.splitscreen, Colors.deepOrangeAccent),
       _ToolInfo(AudioToolType.addAudioToVideo, 'Add to Video', 'Mix audio with video', Icons.video_call, Colors.redAccent),
       _ToolInfo(AudioToolType.changePitch, 'Change Pitch', 'Alter audio pitch', Icons.multiline_chart, Colors.deepPurple),
       _ToolInfo(AudioToolType.stereoMono, 'Mono ↔ Stereo', 'Change channel layout', Icons.speaker_group, Colors.indigoAccent),

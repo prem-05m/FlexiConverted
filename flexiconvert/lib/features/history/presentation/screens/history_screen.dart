@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/database/database_provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/constants/route_constants.dart';
 import '../../../../core/database/models/history_model.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/services/snackbar_service.dart';
@@ -135,14 +137,18 @@ class _HistoryTileState extends State<_HistoryTile> {
     }
   }
 
-  IconData _statusIcon(String status) {
-    switch (status) {
-      case 'success':
-        return Icons.check_circle_outline;
-      case 'failed':
-        return Icons.error_outline;
-      default:
-        return Icons.hourglass_bottom;
+  IconData _getFileIcon(String fileName) {
+    final ext = fileName.split('.').last.toLowerCase();
+    switch (ext) {
+      case 'pdf': return Icons.picture_as_pdf;
+      case 'doc': case 'docx': return Icons.description;
+      case 'xls': case 'xlsx': return Icons.table_chart;
+      case 'ppt': case 'pptx': return Icons.slideshow;
+      case 'jpg': case 'jpeg': case 'png': case 'gif': return Icons.image;
+      case 'mp4': case 'avi': case 'mov': return Icons.video_file;
+      case 'mp3': case 'wav': case 'aac': return Icons.audio_file;
+      case 'zip': case 'rar': return Icons.folder_zip;
+      default: return Icons.insert_drive_file;
     }
   }
 
@@ -206,35 +212,25 @@ class _HistoryTileState extends State<_HistoryTile> {
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
+      onTap: () => context.pushNamed(RouteConstants.historyDetail, extra: item),
       leading: CircleAvatar(
         backgroundColor: context.colorScheme.primaryContainer,
         child: _isDownloading 
           ? const CircularProgressIndicator()
-          : Icon(Icons.transform, color: context.colorScheme.primary),
+          : Icon(_getFileIcon(item.fileName), color: context.colorScheme.primary),
       ),
       title: Text(item.fileName, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(item.toolType, style: const TextStyle(fontWeight: FontWeight.w500)),
-          Text(
-            '${_formatDate(item.timestamp)} • ${_formatSize(item.fileSizeBytes)}',
-            style: context.textTheme.bodySmall?.copyWith(color: context.colorScheme.onSurfaceVariant),
-          ),
-          if (item.deviceName != null && item.deviceName!.isNotEmpty)
-            Text(
-              'Converted from: ${item.deviceName}',
-              style: context.textTheme.bodySmall?.copyWith(
-                color: context.colorScheme.primary, 
-                fontStyle: FontStyle.italic
-              ),
+      subtitle: (item.deviceName != null && item.deviceName!.isNotEmpty)
+        ? Text(
+            item.deviceName!,
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant, 
             ),
-        ],
-      ),
+          )
+        : null,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(_statusIcon(item.status), color: statusColor, size: 18),
           PopupMenuButton<String>(
             onSelected: (val) async {
               if (val == 'open' && !kIsWeb) await OpenFilex.open(item.outputPath);

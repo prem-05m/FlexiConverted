@@ -40,6 +40,7 @@ class DocumentTaskState with _$DocumentTaskState {
     @Default(0.0) double progress,
     @Default(TaskStatus.idle) TaskStatus status,
     String? errorMessage,
+    String? cloudUrl,
   }) = _DocumentTaskState;
 }
 

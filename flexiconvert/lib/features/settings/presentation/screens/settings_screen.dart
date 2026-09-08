@@ -77,6 +77,18 @@ class SettingsScreen extends ConsumerWidget {
                   onTap: () => _pickDownloadLocation(
                       context, notifier, settings.defaultSaveDirectory),
                 ),
+                _buildTileTrailing(
+                  context,
+                  'Multiple Files Action',
+                  Icons.file_copy_outlined,
+                  trailing: Text(settings.multipleFileDownloadPref == 'ask'
+                      ? 'Ask Every Time'
+                      : (settings.multipleFileDownloadPref == 'zip'
+                          ? 'Save as ZIP'
+                          : 'Save in Folder')),
+                  onTap: () => _pickMultipleFilePref(
+                      context, notifier, settings.multipleFileDownloadPref),
+                ),
                 SwitchListTile(
                   secondary: const Icon(Icons.auto_delete_outlined),
                   title: const Text('Auto-delete Original',
@@ -250,6 +262,53 @@ class SettingsScreen extends ConsumerWidget {
     if (result != null) {
       await notifier.updateSaveDirectory(result);
     }
+  }
+
+  Future<void> _pickMultipleFilePref(
+      BuildContext context, SettingsNotifier notifier, String current) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.help_outline),
+              title: const Text('Ask Every Time'),
+              trailing: current == 'ask'
+                  ? const Icon(Icons.check, color: Colors.green)
+                  : null,
+              onTap: () {
+                notifier.updateMultipleFileDownloadPref('ask');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.folder_zip_outlined),
+              title: const Text('Save as ZIP'),
+              trailing: current == 'zip'
+                  ? const Icon(Icons.check, color: Colors.green)
+                  : null,
+              onTap: () {
+                notifier.updateMultipleFileDownloadPref('zip');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.folder_open_outlined),
+              title: const Text('Save in Folder'),
+              trailing: current == 'folder'
+                  ? const Icon(Icons.check, color: Colors.green)
+                  : null,
+              onTap: () {
+                notifier.updateMultipleFileDownloadPref('folder');
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _toggleNotifications(

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +10,7 @@ import 'dart:ui' as ui;
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:gal/gal.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../../shared/widgets/web_constrained_box.dart';
 import '../../providers/qr_config_provider.dart';
 import '../../domain/models/qr_config_model.dart';
@@ -209,21 +209,27 @@ class _QrGeneratorScreenState extends ConsumerState<QrGeneratorScreen> {
         result = await fp.FilePicker.pickFiles(type: type);
       }
       
-      if (result != null && result.isNotEmpty && result.first.path != null) {
+      if (result.isNotEmpty && result.first.path != null) {
         setState(() => _isUploading = true);
         try {
           final dio = Dio();
           final formData = FormData.fromMap({
             'file': await MultipartFile.fromFile(result.first.path!),
           });
-          final response = await dio.post('https://flexi-converted.vercel.app/api/v1/uploads', data: formData);
-          if (response.data['success']) {
-            notifier.updateData(response.data['url']);
+          // Upload to Python backend — base URL from EnvironmentConfig
+          final response = await ApiClient.dio.post(
+            '/api/v1/uploads',
+            data: formData,
+          );
+          if (response.data['success'] == true) {
+            notifier.updateData(response.data['url'] as String);
           }
         } catch (e) {
           debugPrint('Upload failed: $e');
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Upload failed')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Upload failed. Check your connection.')),
+            );
           }
         } finally {
           if (mounted) setState(() => _isUploading = false);

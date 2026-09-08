@@ -30,6 +30,16 @@ class HistoryService {
   }) async {
     final deviceName = await getDeviceName();
     
+    int sizeBytes = 0;
+    try {
+      if (outputPath.isNotEmpty) {
+        final file = File(outputPath);
+        if (file.existsSync()) {
+          sizeBytes = file.lengthSync();
+        }
+      }
+    } catch (_) {}
+
     final historyItem = HistoryItem()
       ..fileName = fileName
       ..toolType = toolType
@@ -37,7 +47,7 @@ class HistoryService {
       ..status = status
       ..outputPath = outputPath
       ..durationMs = durationMs
-      ..fileSizeBytes = 0
+      ..fileSizeBytes = sizeBytes
       ..deviceName = deviceName
       ..cloudUrl = cloudUrl;
 
@@ -46,8 +56,12 @@ class HistoryService {
     // Sync to Firestore if logged in
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      final firestoreService = FirestoreHistoryService(uid: uid);
-      await firestoreService.putHistory(historyItem);
+      try {
+        final firestoreService = FirestoreHistoryService(uid: uid);
+        await firestoreService.putHistory(historyItem);
+      } catch (e) {
+        print('Failed to sync history to Firestore: \$e');
+      }
     }
 
     if (status == 'success' && outputPath.isNotEmpty) {

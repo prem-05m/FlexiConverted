@@ -4,13 +4,12 @@ import 'package:archive/archive_io.dart';
 import '../../features/image/data/engines/local_image_engine.dart';
 import '../../features/image/domain/models/image_task_model.dart';
 import '../../core/models/engine_response.dart';
-import 'media_api_service.dart';
+import '../engines/local_ffmpeg_engine.dart';
 
 enum MediaType { image, video, audio }
 
 class MediaProcessingService {
   final Logger _logger = Logger();
-  final MediaApiService _apiService = MediaApiService();
   final LocalImageEngine _localImageEngine = LocalImageEngine();
 
   /// Abstracted method to process media
@@ -225,52 +224,54 @@ class MediaProcessingService {
     Map<String, dynamic>? params,
     required Function(double) onProgress,
   }) async {
-    // 1. Upload
-    onProgress(0.1);
-    final jobId = await _apiService.uploadAndCreateJob(
-      filePaths: inputPaths,
-      toolType: toolType,
-      params: params,
-    );
-
-    if (jobId == null) throw Exception('Failed to create job on server');
-
-    // 2. Poll
-    bool completed = false;
-    String? error;
+    final LocalFfmpegEngine ffmpegEngine = LocalFfmpegEngine();
     
-    while (!completed) {
-      await Future.delayed(const Duration(seconds: 2));
-      final statusData = await _apiService.getJobStatus(jobId);
+    try {
+      if (inputPaths.isEmpty) throw Exception("No input files");
       
-      if (statusData == null) continue;
-
-      final status = statusData['status'];
-      final progress = (statusData['progress'] ?? 0.0) / 100.0;
+      final inputPath = inputPaths.first;
       
-      // Keep progress between 10% (upload done) and 90% (downloading)
-      onProgress(0.1 + (progress * 0.8)); 
-
-      if (status == 'completed') {
-        completed = true;
-      } else if (status == 'failed' || status == 'cancelled') {
-        error = statusData['error'] ?? 'Job failed on server';
-        completed = true;
+      switch (toolType) {
+        case 'convertFormat':
+        case 'batchConvert':
+          return await ffmpegEngine.convertFormat(
+            inputPath: inputPath, 
+            outputPath: outputPath, 
+            params: params,
+            onProgress: onProgress,
+          );
+          
+        case 'trim':
+          return await ffmpegEngine.trim(
+            inputPath: inputPath, 
+            outputPath: outputPath, 
+            startTimeMs: params?['startTime'] ?? 0.0, 
+            endTimeMs: params?['endTime'] ?? 10000.0, 
+            onProgress: onProgress,
+          );
+          
+        case 'split':
+          return await ffmpegEngine.split(
+            inputPath: inputPath, 
+            outputDir: outputPath, 
+            parts: params?['parts'] ?? 2, 
+            onProgress: onProgress,
+          );
+          
+        case 'cut':
+          return await ffmpegEngine.cut(
+            inputPath: inputPath, 
+            outputPath: outputPath, 
+            removeStartTimeMs: params?['startTime'] ?? 0.0, 
+            removeEndTimeMs: params?['endTime'] ?? 5000.0, 
+            onProgress: onProgress,
+          );
+          
+        default:
+          throw Exception("Unsupported tool type: $toolType");
       }
+    } catch (e) {
+      throw Exception('FFmpeg Processing failed: $e');
     }
-
-    if (error != null) throw Exception(error);
-
-    // 3. Download
-    onProgress(0.9);
-    final downloadSuccess = await _apiService.downloadJobOutput(jobId, outputPath);
-    
-    if (!downloadSuccess) throw Exception('Failed to download processed file');
-
-    // 4. Cleanup on server (optional but good practice)
-    await _apiService.deleteJob(jobId);
-
-    onProgress(1.0);
-    return outputPath;
   }
 }

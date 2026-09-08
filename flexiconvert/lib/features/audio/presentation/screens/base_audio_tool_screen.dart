@@ -22,12 +22,19 @@ class _BaseAudioToolScreenState extends ConsumerState<BaseAudioToolScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> allowed = ['mp3', 'wav', 'aac', 'ogg', 'm4a', 'flac', 'wma'];
+    if (widget.toolType == AudioToolType.convertFormat || 
+        widget.toolType == AudioToolType.extractAudio || 
+        widget.toolType == AudioToolType.batchConvert) {
+      allowed.addAll(['mp4', 'mkv', 'avi', 'mov', 'flv']);
+    }
+
     return UnifiedMediaProcessor(
       title: _title,
       toolTypeEnumString: widget.toolType.name,
       mediaType: MediaType.audio,
-      allowedExtensions: const ['mp3', 'wav', 'aac', 'ogg', 'm4a', 'flac', 'wma'],
-      outputFormats: const ['mp3', 'wav', 'aac', 'ogg', 'm4a'],
+      allowedExtensions: allowed,
+      outputFormats: const ['mp3', 'wav', 'flac', 'aac', 'm4a', 'ogg', 'opus', 'aiff', 'wma', 'amr'],
     );
   }
 }

@@ -90,6 +90,7 @@ class _BaseDocumentToolScreenState extends ConsumerState<BaseDocumentToolScreen>
         status: state.status == TaskStatus.success ? 'success' : 'failed',
         outputPath: outputPath,
         durationMs: duration,
+        cloudUrl: state.cloudUrl,
       );
 
       if (state.status == TaskStatus.failure) {

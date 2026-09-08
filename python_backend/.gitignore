@@ -1,0 +1,7 @@
+python_backend/__pycache__/
+python_backend/*.pyc
+python_backend/uploads/*
+python_backend/outputs/*
+python_backend/.env
+!python_backend/uploads/.gitkeep
+!python_backend/outputs/.gitkeep

@@ -8,7 +8,6 @@ import 'package:pdf/pdf.dart' as pw_core;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdfx/pdfx.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart' as sync_pdf;
-import '../../../../core/exceptions/engine_not_implemented_exception.dart';
 import '../../domain/engines/pdf_engine.dart';
 import '../../domain/models/pdf_task_model.dart';
 import 'ocr_service.dart';

@@ -17,6 +17,7 @@ class RouteConstants {
   static const String audio = 'audio'; // relative to home
   
   static const String history = '/history';
+  static const String historyDetail = 'history_detail'; // relative to history
   static const String favorites = '/favorites';
   static const String settings = '/settings';
   

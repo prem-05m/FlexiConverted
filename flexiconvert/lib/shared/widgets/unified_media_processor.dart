@@ -7,6 +7,8 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/services/media_processing_service.dart';
 import '../../core/services/download_location_service.dart';
 import '../../core/services/history_service.dart';
+import '../../features/settings/presentation/providers/settings_providers.dart';
+import '../../core/services/cloudinary_service.dart';
 import 'custom_button.dart';
 import '../../features/pdf/presentation/widgets/file_picker_widget.dart';
 import 'package:file_picker/file_picker.dart';
@@ -38,8 +40,15 @@ class _UnifiedMediaProcessorState extends ConsumerState<UnifiedMediaProcessor> {
   bool _isProcessing = false;
   double _progress = 0.0;
   String? _error;
-  bool _zipOutput = true;
+  bool _zipOutputState = true;
   bool _isGridView = false;
+
+  bool get _zipOutput {
+    final globalPref = ref.read(settingsProvider).valueOrNull?.multipleFileDownloadPref ?? 'ask';
+    if (globalPref == 'zip') return true;
+    if (globalPref == 'folder') return false;
+    return _zipOutputState;
+  }
 
   final MediaProcessingService _processingService = MediaProcessingService();
 
@@ -73,12 +82,18 @@ class _UnifiedMediaProcessorState extends ConsumerState<UnifiedMediaProcessor> {
       final baseName = fileName.contains('.') ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
       
       String defaultOutName = '${baseName}_processed.${_selectedOutputFormat ?? widget.allowedExtensions.first}';
+      
+      if (widget.toolTypeEnumString == 'convertFormat' || widget.toolTypeEnumString == 'batchConvert') {
+          defaultOutName = '$baseName.${_selectedOutputFormat ?? widget.allowedExtensions.first}';
+      }
 
-      if (_selectedFiles.length > 1 && widget.mediaType == MediaType.image) {
-        if (_zipOutput) {
-          defaultOutName = 'FlexiConverted_Converted_imgs.zip';
-        } else {
-          defaultOutName = 'FlexiConverted_Converted_imgs'; 
+      if (_selectedFiles.length > 1) {
+        if (widget.mediaType == MediaType.image) {
+          defaultOutName = _zipOutput ? 'FlexiConverted_Converted_imgs.zip' : 'FlexiConverted_Converted_imgs'; 
+        } else if (widget.mediaType == MediaType.audio) {
+          defaultOutName = _zipOutput ? 'Audio Converted.zip' : 'Audio Converted';
+        } else if (widget.mediaType == MediaType.video) {
+          defaultOutName = _zipOutput ? 'Video Converted.zip' : 'Video Converted';
         }
       }
 
@@ -108,12 +123,25 @@ class _UnifiedMediaProcessorState extends ConsumerState<UnifiedMediaProcessor> {
       if (resultPath != null) {
         final duration = DateTime.now().difference(startTime).inMilliseconds;
         
+        String? cloudUrl;
+        try {
+          if (!resultPath.toLowerCase().endsWith('.zip') &&
+              !resultPath.toLowerCase().endsWith('.mp4')) {
+            final cloudinary = CloudinaryService.instance;
+            final file = File(resultPath);
+            cloudUrl = await cloudinary.uploadFile(file, file.uri.pathSegments.last);
+          }
+        } catch (e) {
+          print('Cloudinary upload failed: $e');
+        }
+        
         await HistoryService.logConversion(
           fileName: defaultOutName,
           toolType: widget.toolTypeEnumString,
           status: 'success',
           outputPath: resultPath,
           durationMs: duration,
+          cloudUrl: cloudUrl,
         );
 
         if (mounted) {
@@ -144,8 +172,8 @@ class _UnifiedMediaProcessorState extends ConsumerState<UnifiedMediaProcessor> {
       return "Compression enabled";
     }
     if (widget.mediaType == MediaType.video || widget.mediaType == MediaType.audio) {
-      if (widget.toolTypeEnumString.contains('convertFormat')) {
-        return "Processing: Stream Copy (If compatible) / High Quality Re-encode";
+      if (widget.toolTypeEnumString.contains('convertFormat') || widget.toolTypeEnumString.contains('batchConvert')) {
+        return "Processing Method: Remux (Stream Copy) if compatible, else High Quality Re-encode";
       }
       return "Processing: High Quality Re-encode";
     }
@@ -285,7 +313,7 @@ class _UnifiedMediaProcessorState extends ConsumerState<UnifiedMediaProcessor> {
                 ),
               SizedBox(height: AppSpacing.lg),
               
-              if (_selectedFiles.length > 1) ...[
+              if (_selectedFiles.length > 1 && (ref.watch(settingsProvider).valueOrNull?.multipleFileDownloadPref ?? 'ask') == 'ask') ...[
                 Text('Output Mode:', style: Theme.of(context).textTheme.titleMedium),
                 Row(
                   children: [
@@ -293,16 +321,16 @@ class _UnifiedMediaProcessorState extends ConsumerState<UnifiedMediaProcessor> {
                       child: RadioListTile<bool>(
                         title: const Text('ZIP Archive'),
                         value: true,
-                        groupValue: _zipOutput,
-                        onChanged: (val) => setState(() => _zipOutput = val!),
+                        groupValue: _zipOutputState,
+                        onChanged: (val) => setState(() => _zipOutputState = val!),
                       ),
                     ),
                     Expanded(
                       child: RadioListTile<bool>(
                         title: const Text('Folder Output'),
                         value: false,
-                        groupValue: _zipOutput,
-                        onChanged: (val) => setState(() => _zipOutput = val!),
+                        groupValue: _zipOutputState,
+                        onChanged: (val) => setState(() => _zipOutputState = val!),
                       ),
                     ),
                   ],

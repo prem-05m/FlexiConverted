@@ -21,27 +21,36 @@ class FirestoreHistoryService {
   /// Watch all history items as a real-time stream, ordered by timestamp desc.
   Stream<List<HistoryItem>> watchHistory() {
     return _historyQuery
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs.map(_docToHistoryItem).toList());
+        .map((snap) {
+          final items = snap.docs.map(_docToHistoryItem).toList();
+          items.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+          return items;
+        });
   }
 
   /// Watch only successful history items as a real-time stream.
   Stream<List<HistoryItem>> watchSuccessfulHistory() {
     return _historyQuery
         .where('status', isEqualTo: 'success')
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs.map(_docToHistoryItem).toList());
+        .map((snap) {
+          final items = snap.docs.map(_docToHistoryItem).toList();
+          items.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+          return items;
+        });
   }
 
   /// Fetch all history items once (optionally limited).
   Future<List<HistoryItem>> findAllHistory({int? limit}) async {
-    Query<Map<String, dynamic>> query =
-        _historyQuery.orderBy('createdAt', descending: true);
-    if (limit != null) query = query.limit(limit);
+    Query<Map<String, dynamic>> query = _historyQuery;
     final snap = await query.get();
-    return snap.docs.map(_docToHistoryItem).toList();
+    final items = snap.docs.map(_docToHistoryItem).toList();
+    items.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    if (limit != null && items.length > limit) {
+      return items.sublist(0, limit);
+    }
+    return items;
   }
 
   /// Save or update a history item in Firestore.

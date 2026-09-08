@@ -11,6 +11,7 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../../../core/constants/route_constants.dart';
 import '../../../../core/services/download_location_service.dart';
 import '../../../../core/services/history_service.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/animated_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
@@ -127,12 +128,22 @@ class _ScanToPdfScreenState extends ConsumerState<ScanToPdfScreen> {
       final pdfBytes = await pdf.save();
       await File(outputPath).writeAsBytes(pdfBytes);
 
+      String? cloudUrl;
+      try {
+        final cloudinary = CloudinaryService.instance;
+        final file = File(outputPath);
+        cloudUrl = await cloudinary.uploadFile(file, fileName);
+      } catch (e) {
+        print('Cloudinary upload failed: $e');
+      }
+
       await HistoryService.logConversion(
         fileName: fileName,
         toolType: PdfToolType.scanToPdf.name,
         status: 'success',
         outputPath: outputPath,
         durationMs: 0,
+        cloudUrl: cloudUrl,
       );
 
       if (mounted) {

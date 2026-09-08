@@ -12,6 +12,7 @@ import '../../../../shared/widgets/animated_app_bar.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../core/services/download_location_service.dart';
 import '../../../../core/services/history_service.dart';
+import '../../../settings/presentation/providers/settings_providers.dart';
 import '../../domain/engines/pdf_engine.dart';
 import '../../domain/models/pdf_task_model.dart';
 import '../providers/pdf_task_provider.dart';
@@ -537,7 +538,8 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
     if (widget.toolType == PdfToolType.rotatePdf) {
       if (_isRotateMulti) {
         // Ask zip or folder
-        final saveAsFolder = _saveAsFormat == 'folder';
+        final globalPref = ref.read(settingsProvider).valueOrNull?.multipleFileDownloadPref ?? 'ask';
+        final saveAsFolder = globalPref == 'ask' ? _saveAsFormat == 'folder' : globalPref == 'folder';
         final ext = saveAsFolder ? '' : '.zip';
         if (!mounted) return;
         final outputPath = await DownloadLocationService.getOutputPath(context, ref, '$stem$ext');
@@ -564,7 +566,8 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
       extraParams['pageNumberOptions'] = _pageNumberOptions;
 
       if (selectedFiles.length > 1) {
-        final saveAsFolder = _saveAsFormat == 'folder';
+        final globalPref = ref.read(settingsProvider).valueOrNull?.multipleFileDownloadPref ?? 'ask';
+        final saveAsFolder = globalPref == 'ask' ? _saveAsFormat == 'folder' : globalPref == 'folder';
         final ext = saveAsFolder ? '' : '.zip';
         if (!mounted) return;
         final outputPath = await DownloadLocationService.getOutputPath(context, ref, '$stem$ext');
@@ -740,6 +743,7 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
           status: state.status == TaskStatus.success ? 'success' : 'failed',
           outputPath: outputPath,
           durationMs: duration,
+          cloudUrl: state.cloudUrl,
         );
         if (state.status == TaskStatus.failure) {
           _snack(state.errorMessage ?? 'An error occurred', Colors.red);
@@ -902,6 +906,9 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
       return const ScanToPdfScreen();
     }
 
+    final settingsAsync = ref.watch(settingsProvider);
+    final multipleFilePref = settingsAsync.valueOrNull?.multipleFileDownloadPref ?? 'ask';
+
     return Scaffold(
       appBar: AnimatedAppBar(title: _title),
       body: SingleChildScrollView(
@@ -969,7 +976,7 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
                         _ocrOutputFormat == 'txt' && widget.toolType == PdfToolType.ocrPdf
                             ? '.txt'
                             : (widget.toolType == PdfToolType.rotatePdf && _isRotateMulti) || (widget.toolType == PdfToolType.addPageNumbers && selectedFiles.length > 1)
-                                ? (_saveAsFormat == 'zip' ? '.zip' : '')
+                                ? ((multipleFilePref == 'ask' ? _saveAsFormat : multipleFilePref) == 'zip' ? '.zip' : '')
                                 : '.pdf',
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
@@ -978,8 +985,8 @@ class _BasePdfToolScreenState extends ConsumerState<BasePdfToolScreen> {
                 ),
               ),
               
-              if ((widget.toolType == PdfToolType.rotatePdf && _isRotateMulti) || 
-                  (widget.toolType == PdfToolType.addPageNumbers && selectedFiles.length > 1) ||
+              if (((widget.toolType == PdfToolType.rotatePdf && _isRotateMulti) || 
+                  (widget.toolType == PdfToolType.addPageNumbers && selectedFiles.length > 1)) && multipleFilePref == 'ask' ||
                   (widget.toolType == PdfToolType.cropPdf && selectedFiles.isNotEmpty)) ...[
                 const SizedBox(height: 12),
                 Text(widget.toolType == PdfToolType.cropPdf ? 'Apply crop to' : 'Save as', style: Theme.of(context).textTheme.titleSmall),

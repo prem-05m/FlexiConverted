@@ -48,6 +48,7 @@ class PdfTaskState with _$PdfTaskState {
     @Default(0.0) double progress,
     @Default(TaskStatus.idle) TaskStatus status,
     String? errorMessage,
+    String? cloudUrl,
   }) = _PdfTaskState;
 }
 

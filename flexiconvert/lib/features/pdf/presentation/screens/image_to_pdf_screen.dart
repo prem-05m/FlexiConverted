@@ -14,6 +14,7 @@ import '../../../pdf/presentation/widgets/file_picker_widget.dart';
 import '../../../pdf/presentation/widgets/progress_dialog.dart';
 import '../../../../core/services/download_location_service.dart';
 import '../../../../core/services/history_service.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import 'image_editor_screen.dart';
 import 'package:path/path.dart' as path;
 import 'package:image/image.dart' as img;
@@ -127,6 +128,14 @@ class _ImageToPdfScreenState extends ConsumerState<ImageToPdfScreen> {
       final file = File(outputPath);
       await file.writeAsBytes(await pdf.save());
 
+      String? cloudUrl;
+      try {
+        final cloudinary = CloudinaryService.instance;
+        cloudUrl = await cloudinary.uploadFile(file, fileName);
+      } catch (e) {
+        print('Cloudinary upload failed: $e');
+      }
+
       if (mounted) {
         ProgressDialog.hide(context);
         await HistoryService.logConversion(
@@ -135,6 +144,7 @@ class _ImageToPdfScreenState extends ConsumerState<ImageToPdfScreen> {
           status: 'success',
           outputPath: outputPath,
           durationMs: 0,
+          cloudUrl: cloudUrl,
         );
         final toolPath = '/home/document/jpgToPdf';
         context.go('${RouteConstants.completed}?from=${Uri.encodeComponent(toolPath)}');

@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import '../../domain/models/image_task_model.dart';
 import 'image_repository_provider.dart';
 
@@ -46,12 +48,27 @@ class ImageTaskNotifier extends Notifier<ImageTaskState> {
           errorMessage: failure.message,
         );
       },
-      (success) {
+      (success) async {
         state = state.copyWith(
           status: TaskStatus.success,
           outputPath: success.outputPath,
           progress: 1.0,
         );
+        
+        try {
+          if (!success.outputPath.toLowerCase().endsWith('.zip') &&
+              !success.outputPath.toLowerCase().endsWith('.mp4')) {
+            final cloudinary = CloudinaryService.instance;
+            final file = File(success.outputPath);
+            final fileName = file.uri.pathSegments.last;
+            final url = await cloudinary.uploadFile(file, fileName);
+            if (url != null) {
+              state = state.copyWith(cloudUrl: url);
+            }
+          }
+        } catch (e) {
+          print('Cloudinary upload failed: $e');
+        }
       },
     );
   }

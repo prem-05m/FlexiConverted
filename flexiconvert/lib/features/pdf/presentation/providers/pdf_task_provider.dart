@@ -59,10 +59,16 @@ class PdfTaskNotifier extends Notifier<PdfTaskState> {
 
         // Auto-upload to Cloudinary
         try {
-          final cloudinary = CloudinaryService.instance;
-          final file = File(success.outputPath);
-          final fileName = file.uri.pathSegments.last;
-          await cloudinary.uploadFile(file, fileName);
+          if (!success.outputPath.toLowerCase().endsWith('.zip') &&
+              !success.outputPath.toLowerCase().endsWith('.mp4')) {
+            final cloudinary = CloudinaryService.instance;
+            final file = File(success.outputPath);
+            final fileName = file.uri.pathSegments.last;
+            final url = await cloudinary.uploadFile(file, fileName);
+            if (url != null) {
+              state = state.copyWith(cloudUrl: url);
+            }
+          }
         } catch (e) {
           // Fail silently for uploads to not interrupt the user flow
           print('Cloudinary upload failed: $e');

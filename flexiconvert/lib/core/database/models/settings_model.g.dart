@@ -32,13 +32,18 @@ const AppSettingsSchema = CollectionSchema(
       name: r'languageCode',
       type: IsarType.string,
     ),
-    r'notificationsEnabled': PropertySchema(
+    r'multipleFileDownloadPref': PropertySchema(
       id: 3,
+      name: r'multipleFileDownloadPref',
+      type: IsarType.string,
+    ),
+    r'notificationsEnabled': PropertySchema(
+      id: 4,
       name: r'notificationsEnabled',
       type: IsarType.bool,
     ),
     r'themeMode': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'themeMode',
       type: IsarType.string,
     )
@@ -65,6 +70,7 @@ int _appSettingsEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.defaultSaveDirectory.length * 3;
   bytesCount += 3 + object.languageCode.length * 3;
+  bytesCount += 3 + object.multipleFileDownloadPref.length * 3;
   bytesCount += 3 + object.themeMode.length * 3;
   return bytesCount;
 }
@@ -78,8 +84,9 @@ void _appSettingsSerialize(
   writer.writeBool(offsets[0], object.autoDeleteOriginal);
   writer.writeString(offsets[1], object.defaultSaveDirectory);
   writer.writeString(offsets[2], object.languageCode);
-  writer.writeBool(offsets[3], object.notificationsEnabled);
-  writer.writeString(offsets[4], object.themeMode);
+  writer.writeString(offsets[3], object.multipleFileDownloadPref);
+  writer.writeBool(offsets[4], object.notificationsEnabled);
+  writer.writeString(offsets[5], object.themeMode);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -93,8 +100,9 @@ AppSettings _appSettingsDeserialize(
   object.defaultSaveDirectory = reader.readString(offsets[1]);
   object.id = id;
   object.languageCode = reader.readString(offsets[2]);
-  object.notificationsEnabled = reader.readBool(offsets[3]);
-  object.themeMode = reader.readString(offsets[4]);
+  object.multipleFileDownloadPref = reader.readString(offsets[3]);
+  object.notificationsEnabled = reader.readBool(offsets[4]);
+  object.themeMode = reader.readString(offsets[5]);
   return object;
 }
 
@@ -112,8 +120,10 @@ P _appSettingsDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 4:
+      return (reader.readBool(offset)) as P;
+    case 5:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -549,6 +559,144 @@ extension AppSettingsQueryFilter
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'multipleFileDownloadPref',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'multipleFileDownloadPref',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'multipleFileDownloadPref',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'multipleFileDownloadPref',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'multipleFileDownloadPref',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'multipleFileDownloadPref',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefContains(String value,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'multipleFileDownloadPref',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'multipleFileDownloadPref',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'multipleFileDownloadPref',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      multipleFileDownloadPrefIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'multipleFileDownloadPref',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       notificationsEnabledEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -745,6 +893,20 @@ extension AppSettingsQuerySortBy
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByMultipleFileDownloadPref() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'multipleFileDownloadPref', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByMultipleFileDownloadPrefDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'multipleFileDownloadPref', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
       sortByNotificationsEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notificationsEnabled', Sort.asc);
@@ -827,6 +989,20 @@ extension AppSettingsQuerySortThenBy
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByMultipleFileDownloadPref() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'multipleFileDownloadPref', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByMultipleFileDownloadPrefDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'multipleFileDownloadPref', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
       thenByNotificationsEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notificationsEnabled', Sort.asc);
@@ -878,6 +1054,14 @@ extension AppSettingsQueryWhereDistinct
   }
 
   QueryBuilder<AppSettings, AppSettings, QDistinct>
+      distinctByMultipleFileDownloadPref({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'multipleFileDownloadPref',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QDistinct>
       distinctByNotificationsEnabled() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'notificationsEnabled');
@@ -917,6 +1101,13 @@ extension AppSettingsQueryProperty
   QueryBuilder<AppSettings, String, QQueryOperations> languageCodeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'languageCode');
+    });
+  }
+
+  QueryBuilder<AppSettings, String, QQueryOperations>
+      multipleFileDownloadPrefProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'multipleFileDownloadPref');
     });
   }
 

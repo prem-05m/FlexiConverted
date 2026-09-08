@@ -11,4 +11,5 @@ class AppSettings {
   late bool notificationsEnabled;
   late String defaultSaveDirectory;
   late bool autoDeleteOriginal;
+  late String multipleFileDownloadPref; // ask, zip, folder
 }

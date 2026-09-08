@@ -16,11 +16,39 @@ import '../widgets/recent_files_list.dart';
 import '../widgets/statistics_card.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 
-class HomeScreen extends ConsumerWidget {
+import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/first_run_dialog.dart';
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkFirstRun();
+    });
+  }
+
+  Future<void> _checkFirstRun() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isFirstRun = prefs.getBool('isFirstRun') ?? true;
+    if (isFirstRun && mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const FirstRunSetupDialog(),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authStateProvider);
     final user = authState.value;
     final profileState = ref.watch(userProfileProvider);

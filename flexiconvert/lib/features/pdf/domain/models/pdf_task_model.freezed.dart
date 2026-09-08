@@ -24,6 +24,7 @@ mixin _$PdfTaskState {
   double get progress => throw _privateConstructorUsedError;
   TaskStatus get status => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
+  String? get cloudUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PdfTaskStateCopyWith<PdfTaskState> get copyWith =>
@@ -44,7 +45,8 @@ abstract class $PdfTaskStateCopyWith<$Res> {
       List<String>? outputPaths,
       double progress,
       TaskStatus status,
-      String? errorMessage});
+      String? errorMessage,
+      String? cloudUrl});
 }
 
 /// @nodoc
@@ -68,6 +70,7 @@ class _$PdfTaskStateCopyWithImpl<$Res, $Val extends PdfTaskState>
     Object? progress = null,
     Object? status = null,
     Object? errorMessage = freezed,
+    Object? cloudUrl = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -102,6 +105,10 @@ class _$PdfTaskStateCopyWithImpl<$Res, $Val extends PdfTaskState>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      cloudUrl: freezed == cloudUrl
+          ? _value.cloudUrl
+          : cloudUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -122,7 +129,8 @@ abstract class _$$PdfTaskStateImplCopyWith<$Res>
       List<String>? outputPaths,
       double progress,
       TaskStatus status,
-      String? errorMessage});
+      String? errorMessage,
+      String? cloudUrl});
 }
 
 /// @nodoc
@@ -144,6 +152,7 @@ class __$$PdfTaskStateImplCopyWithImpl<$Res>
     Object? progress = null,
     Object? status = null,
     Object? errorMessage = freezed,
+    Object? cloudUrl = freezed,
   }) {
     return _then(_$PdfTaskStateImpl(
       id: null == id
@@ -178,6 +187,10 @@ class __$$PdfTaskStateImplCopyWithImpl<$Res>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      cloudUrl: freezed == cloudUrl
+          ? _value.cloudUrl
+          : cloudUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -193,7 +206,8 @@ class _$PdfTaskStateImpl implements _PdfTaskState {
       final List<String>? outputPaths,
       this.progress = 0.0,
       this.status = TaskStatus.idle,
-      this.errorMessage})
+      this.errorMessage,
+      this.cloudUrl})
       : _inputPaths = inputPaths,
         _outputPaths = outputPaths;
 
@@ -232,10 +246,12 @@ class _$PdfTaskStateImpl implements _PdfTaskState {
   final TaskStatus status;
   @override
   final String? errorMessage;
+  @override
+  final String? cloudUrl;
 
   @override
   String toString() {
-    return 'PdfTaskState(id: $id, toolType: $toolType, inputPaths: $inputPaths, outputPath: $outputPath, outputPaths: $outputPaths, progress: $progress, status: $status, errorMessage: $errorMessage)';
+    return 'PdfTaskState(id: $id, toolType: $toolType, inputPaths: $inputPaths, outputPath: $outputPath, outputPaths: $outputPaths, progress: $progress, status: $status, errorMessage: $errorMessage, cloudUrl: $cloudUrl)';
   }
 
   @override
@@ -256,7 +272,9 @@ class _$PdfTaskStateImpl implements _PdfTaskState {
                 other.progress == progress) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                other.errorMessage == errorMessage) &&
+            (identical(other.cloudUrl, cloudUrl) ||
+                other.cloudUrl == cloudUrl));
   }
 
   @override
@@ -269,7 +287,8 @@ class _$PdfTaskStateImpl implements _PdfTaskState {
       const DeepCollectionEquality().hash(_outputPaths),
       progress,
       status,
-      errorMessage);
+      errorMessage,
+      cloudUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -287,7 +306,8 @@ abstract class _PdfTaskState implements PdfTaskState {
       final List<String>? outputPaths,
       final double progress,
       final TaskStatus status,
-      final String? errorMessage}) = _$PdfTaskStateImpl;
+      final String? errorMessage,
+      final String? cloudUrl}) = _$PdfTaskStateImpl;
 
   @override
   String get id;
@@ -305,6 +325,8 @@ abstract class _PdfTaskState implements PdfTaskState {
   TaskStatus get status;
   @override
   String? get errorMessage;
+  @override
+  String? get cloudUrl;
   @override
   @JsonKey(ignore: true)
   _$$PdfTaskStateImplCopyWith<_$PdfTaskStateImpl> get copyWith =>

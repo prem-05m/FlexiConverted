@@ -23,6 +23,7 @@ mixin _$AudioTaskState {
   double get progress => throw _privateConstructorUsedError;
   TaskStatus get status => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
+  String? get cloudUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AudioTaskStateCopyWith<AudioTaskState> get copyWith =>
@@ -42,7 +43,8 @@ abstract class $AudioTaskStateCopyWith<$Res> {
       String? outputPath,
       double progress,
       TaskStatus status,
-      String? errorMessage});
+      String? errorMessage,
+      String? cloudUrl});
 }
 
 /// @nodoc
@@ -65,6 +67,7 @@ class _$AudioTaskStateCopyWithImpl<$Res, $Val extends AudioTaskState>
     Object? progress = null,
     Object? status = null,
     Object? errorMessage = freezed,
+    Object? cloudUrl = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -95,6 +98,10 @@ class _$AudioTaskStateCopyWithImpl<$Res, $Val extends AudioTaskState>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      cloudUrl: freezed == cloudUrl
+          ? _value.cloudUrl
+          : cloudUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -114,7 +121,8 @@ abstract class _$$AudioTaskStateImplCopyWith<$Res>
       String? outputPath,
       double progress,
       TaskStatus status,
-      String? errorMessage});
+      String? errorMessage,
+      String? cloudUrl});
 }
 
 /// @nodoc
@@ -135,6 +143,7 @@ class __$$AudioTaskStateImplCopyWithImpl<$Res>
     Object? progress = null,
     Object? status = null,
     Object? errorMessage = freezed,
+    Object? cloudUrl = freezed,
   }) {
     return _then(_$AudioTaskStateImpl(
       id: null == id
@@ -165,6 +174,10 @@ class __$$AudioTaskStateImplCopyWithImpl<$Res>
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      cloudUrl: freezed == cloudUrl
+          ? _value.cloudUrl
+          : cloudUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -179,7 +192,8 @@ class _$AudioTaskStateImpl implements _AudioTaskState {
       this.outputPath,
       this.progress = 0.0,
       this.status = TaskStatus.idle,
-      this.errorMessage})
+      this.errorMessage,
+      this.cloudUrl})
       : _inputPaths = inputPaths;
 
   @override
@@ -207,10 +221,12 @@ class _$AudioTaskStateImpl implements _AudioTaskState {
   final TaskStatus status;
   @override
   final String? errorMessage;
+  @override
+  final String? cloudUrl;
 
   @override
   String toString() {
-    return 'AudioTaskState(id: $id, toolType: $toolType, inputPaths: $inputPaths, outputPath: $outputPath, progress: $progress, status: $status, errorMessage: $errorMessage)';
+    return 'AudioTaskState(id: $id, toolType: $toolType, inputPaths: $inputPaths, outputPath: $outputPath, progress: $progress, status: $status, errorMessage: $errorMessage, cloudUrl: $cloudUrl)';
   }
 
   @override
@@ -229,7 +245,9 @@ class _$AudioTaskStateImpl implements _AudioTaskState {
                 other.progress == progress) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.errorMessage, errorMessage) ||
-                other.errorMessage == errorMessage));
+                other.errorMessage == errorMessage) &&
+            (identical(other.cloudUrl, cloudUrl) ||
+                other.cloudUrl == cloudUrl));
   }
 
   @override
@@ -241,7 +259,8 @@ class _$AudioTaskStateImpl implements _AudioTaskState {
       outputPath,
       progress,
       status,
-      errorMessage);
+      errorMessage,
+      cloudUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -259,7 +278,8 @@ abstract class _AudioTaskState implements AudioTaskState {
       final String? outputPath,
       final double progress,
       final TaskStatus status,
-      final String? errorMessage}) = _$AudioTaskStateImpl;
+      final String? errorMessage,
+      final String? cloudUrl}) = _$AudioTaskStateImpl;
 
   @override
   String get id;
@@ -275,6 +295,8 @@ abstract class _AudioTaskState implements AudioTaskState {
   TaskStatus get status;
   @override
   String? get errorMessage;
+  @override
+  String? get cloudUrl;
   @override
   @JsonKey(ignore: true)
   _$$AudioTaskStateImplCopyWith<_$AudioTaskStateImpl> get copyWith =>
